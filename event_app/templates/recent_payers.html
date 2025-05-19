@@ -1,77 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recent Payers</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Recent Payers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 24px;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
 
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
+    .controls input,
+    .controls select {
+      padding: 8px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
 
-        th {
-            background-color: #007bff;
-            color: white;
-        }
+    table {
+      width: 95%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      font-size: 14px;
+    }
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
 
-        @media (max-width: 768px) {
-            th, td {
-                padding: 8px;
-            }
-        }
-    </style>
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+
+    .pagination {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .pagination button {
+      margin: 0 3px;
+      padding: 6px 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .pagination button.disabled {
+      background-color: #ccc;
+      cursor: default;
+    }
+
+    @media (max-width: 768px) {
+      table {
+        width: 100%;
+        font-size: 12px;
+      }
+
+      .controls {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Participants Who Made Payments in the Last 7 Days</h1>
+  <h1>Participants Who Made Payments in the Last 7 Days</h1>
 
-    {% if participants %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Participant Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for participant in participants %}
-                    <tr>
-                        <td>{{ participant.name }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>No participants made payments in the last 7 days.</p>
-    {% endif %}
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Search by name, email, phone..." onkeyup="filterTable()" />
+    <select id="eventFilter" onchange="filterTable()">
+      <option value="">Filter by Event</option>
+      {% for participant in participants %}
+        <option value="{{ participant.Event.title }}">{{ participant.Event.title }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  {% if participants %}
+    <table id="participantsTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Sex</th>
+          <th>University</th>
+          <th>Event</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for participant in participants %}
+        <tr>
+          <td>{{ participant.name }}</td>
+          <td>{{ participant.email }}</td>
+          <td>{{ participant.phone_number }}</td>
+          <td>{{ participant.sex }}</td>
+          <td>{{ participant.university }}</td>
+          <td>{{ participant.Event.title }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="pagination" id="pagination"></div>
+  {% else %}
+    <p style="text-align: center;">No participants made payments in the last 7 days.</p>
+  {% endif %}
+
+  <script>
+    const rowsPerPage = 5;
+    let currentPage = 1;
+
+    function filterTable() {
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const eventFilter = document.getElementById("eventFilter").value.toLowerCase();
+      const table = document.getElementById("participantsTable");
+      const rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+      let visibleRows = [];
+
+      for (let row of rows) {
+        const cells = row.getElementsByTagName("td");
+        const rowText = Array.from(cells).map(cell => cell.textContent.toLowerCase()).join(" ");
+        const matchesSearch = rowText.includes(input);
+        const matchesEvent = !eventFilter || rowText.includes(eventFilter);
+
+        if (matchesSearch && matchesEvent) {
+          row.style.display = "";
+          visibleRows.push(row);
+        } else {
+          row.style.display = "none";
+        }
+      }
+
+      currentPage = 1;
+      paginate(visibleRows);
+    }
+
+    function paginate(rows) {
+      const totalPages = Math.ceil(rows.length / rowsPerPage);
+      const pagination = document.getElementById("pagination");
+
+      for (let i = 0; i < rows.length; i++) {
+        rows[i].style.display = (i >= (currentPage - 1) * rowsPerPage && i < currentPage * rowsPerPage) ? "" : "none";
+      }
+
+      pagination.innerHTML = "";
+
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement("button");
+        btn.innerText = i;
+        btn.className = (i === currentPage) ? "disabled" : "";
+        btn.onclick = () => {
+          currentPage = i;
+          paginate(rows);
+        };
+        pagination.appendChild(btn);
+      }
+    }
+
+    window.onload = () => {
+      const rows = Array.from(document.querySelectorAll("#participantsTable tbody tr"));
+      paginate(rows);
+    };
+  </script>
 </body>
 </html>

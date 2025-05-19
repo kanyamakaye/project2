@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Average Price per Event</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <!-- Styling -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding: 30px;
+        }
+        .table-container {
+            max-height: 400px; /* Set max height for scrolling */
+            overflow-y: auto;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            background-color: white;
+        }
+        th {
+            position: sticky;
+            top: 0;
+            background-color: #4CAF50;
+            color: white;
+            z-index: 2;
+        }
+        input[type="text"] {
+            padding: 8px;
+            width: 250px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Average Price Paid per Event</h1>
+
+    <input type="text" id="searchInput" placeholder="Search event title...">
+    <button onclick="exportToPDF()">Export to PDF</button>
+
+    <div class="table-container">
+        <table id="priceTable">
+            <thead>
+                <tr>
+                    <th>Event Title</th>
+                    <th>Average Price ($)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in average_prices %}
+                    <tr>
+                        <td>{{ event.title }}</td>
+                        <td>{{ event.avg_price }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="2">No events found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- JS for Search -->
+    <script>
+        document.getElementById("searchInput").addEventListener("keyup", function () {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll("#priceTable tbody tr");
+            rows.forEach(row => {
+                let title = row.cells[0].textContent.toLowerCase();
+                row.style.display = title.includes(filter) ? "" : "none";
+            });
+        });
+    </script>
+
+    <!-- JS for Export to PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        async function exportToPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.text("Average Price Paid per Event", 10, 10);
+            let y = 20;
+
+            const rows = document.querySelectorAll("#priceTable tbody tr");
+            rows.forEach(row => {
+                if (row.style.display !== "none") {
+                    const title = row.cells[0].textContent;
+                    const price = row.cells[1].textContent;
+                    doc.text(`${title} - $${price}`, 10, y);
+                    y += 10;
+                }
+            });
+
+            doc.save("average_prices.pdf");
+        }
+    </script>
+
+</body>
+</html>

@@ -393,13 +393,16 @@ def highest_paid_events(request):
     return render(request, 'analytics/highest_paid.html', context)
 
 def top_paying_participants(request):
-    participants = Participant_management.objects.annotate(
-        total_paid=Sum('payment__amount_paid')
-    ).filter(
-        total_paid__isnull=False
-    ).order_by('-total_paid')[:10]
-    return render(request, 'top_paying_participants.html', {'participants': participants})
+    # Annotate participants with their total paid amount
+    participants = (
+        Participant_management.objects.annotate(
+            total_paid=Sum('payment__amount_paid', filter=Q(payment__payment_status='PAID'))
+        )
+        .filter(total_paid__gt=0)
+        .order_by('-total_paid')[:10]  # top 10
+    )
 
+    return render(request, 'top_paying_participants.html', {'participants': participants})
 def recent_payers(request):
     recent_date = timezone.now() - timezone.timedelta(days=7)
     participants = Participant_management.objects.filter(
@@ -771,7 +774,9 @@ def average_price_analytics(request):
         logger.error(f"Error in average_price_analytics view: {str(e)}")
         messages.error(request, "An error occurred while loading analytics.")
         return redirect('home')
-
+def average_price_per_event(request):
+    average_prices = Event_management.objects.values('title').annotate(avg_price=Avg('price'))
+    return render(request, 'average_price.html', {'average_prices': average_prices})
 
 def top_revenue_events(request):
     """View for displaying events that generated the most revenue."""
@@ -808,7 +813,9 @@ def event_statistics(request):
         'category_values': category_values,
     }
     return render(request, 'analytics/event_statistics.html', context)
-
+def highest_paid_event(request):
+    event = Event_management.objects.order_by('-price').first()
+    return render(request, 'highest_paid_event.html', {'event': event})
 
 def participant_statistics(request):
     """View for displaying participant statistics."""
@@ -1364,3 +1371,10 @@ def upload_gallery_image(request):
 def gallery_view(request):
     images = GalleryImage.objects.all()
     return render(request, 'gallery.html', {'images': images})
+
+def total_speakers(request):
+    total = Speaker_management.objects.count()
+    return render(request, 'total_speakers.html', {'total': total})
+def total_participants(request):
+    total = Participant_management.objects.count()
+    return render(request, 'total_participants.html', {'total': total})

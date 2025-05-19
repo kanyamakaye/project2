@@ -99,4 +99,9 @@ urlpatterns = [
      path('events/free/', views.free_events_view, name='free_events'),
      path('api/upload-gallery-image/', views.upload_gallery_image, name='upload_gallery_image'),
      path('event_image/',views.gallery_view),
+     path('events/average-price/', views.average_price_per_event, name='average_price_per_event'),
+    path('highest-paid-event/', views.highest_paid_event, name='highest_paid_event'),
+    path('total-speakers/', views.total_speakers, name='total_speakers'),
+     path('total-participants/', views.total_participants, name='total_participants'),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

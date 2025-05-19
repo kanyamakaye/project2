@@ -1,83 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Paying Participants</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
+  <meta charset="UTF-8" />
+  <title>Top Paying Participants</title>
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
 
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
+  <!-- Styling -->
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f9fa;
+      padding: 40px 20px;
+      color: #333;
+    }
 
-        th {
-            background-color: #007bff;
-            color: white;
-        }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+    }
 
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 700;
+    }
 
-        tr:hover {
-            background-color: #f1f1f1;
-        }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
 
-        @media (max-width: 768px) {
-            th, td {
-                padding: 8px;
-            }
-        }
-    </style>
+    .controls input,
+    .controls select,
+    .controls button {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .controls button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .controls button:hover {
+      background-color: #0056b3;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+      display: none;
+    }
+
+    .table-container {
+      background: white;
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    }
+
+    table.dataTable thead {
+      background-color: #007bff;
+      color: white;
+    }
+
+    table.dataTable thead th {
+      border-bottom: none;
+    }
+  </style>
+
+  <!-- jQuery & DataTables JS -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 </head>
+
 <body>
-    <h1>Top Paying Participants</h1>
+  <div class="container">
+    <h2>Top Paying Participants</h2>
 
-    {% if participants_with_payment %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Participant Name</th>
-                    <th>Total Paid</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for participant, total in participants_with_payment %}
-                    <tr>
-                        <td>{{ participant.name }}</td>
-                        <td>{{ total }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div class="controls">
+      <input type="text" id="searchInput" placeholder="Search by name or email" />
+      <select id="universityFilter">
+        <option value="">All Universities</option>
+        {% for u in universities %}
+          <option value="{{ u }}">{{ u }}</option>
+        {% endfor %}
+      </select>
+      <button onclick="exportToPDF()">📄 Export to PDF</button>
+    </div>
+
+    {% if participants %}
+    <div class="table-container">
+      <table id="participantsTable" class="display">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Sex</th>
+            <th>University</th>
+            <th>Total Paid</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in participants %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.email }}</td>
+            <td>{{ p.phone_number }}</td>
+            <td>{{ p.sex }}</td>
+            <td>{{ p.university }}</td>
+            <td>{{ p.total_paid }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     {% else %}
-        <p>No top paying participants found.</p>
+      <p style="text-align:center;">No participants have made payments yet.</p>
     {% endif %}
+  </div>
 
-    <a href="{% url 'speaker_forms' %}" class="admin-menu-link" data-section="speakers">
+  <script>
+    $(document).ready(function () {
+      const table = $('#participantsTable').DataTable({
+        pageLength: 10,
+        order: [[6, 'desc']]  // sort by Total Paid descending
+      });
+
+      $('#searchInput').on('keyup', function () {
+        table.search(this.value).draw();
+      });
+
+      $('#universityFilter').on('change', function () {
+        table.column(5).search(this.value).draw();
+      });
+    });
+
+    async function exportToPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("Top Paying Participants", 14, 20);
+
+      const headers = ["#", "Name", "Email", "Phone", "Sex", "University", "Total Paid"];
+      const rows = [];
+
+      $('#participantsTable tbody tr:visible').each(function () {
+        const row = [];
+        $(this).find('td').each(function () {
+          row.push($(this).text());
+        });
+        rows.push(row);
+      });
+
+      doc.autoTable({
+        head: [headers],
+        body: rows,
+        startY: 30,
+        theme: 'striped',
+        headStyles: { fillColor: [0, 123, 255] }
+      });
+
+      doc.save("Top_Paying_Participants.pdf");
+    }
+  </script>
 </body>
 </html>
-
-
