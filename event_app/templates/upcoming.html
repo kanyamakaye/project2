@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Upcoming Events</title>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+                background-color: #f9f9f9;
+            }
+
+            th, td {
+                padding: 12px;
+                text-align: left;
+                border: 1px solid #ddd;
+            }
+
+            th {
+                background-color: #007bff;
+                color: white;
+            }
+
+            tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            tr:hover {
+                background-color: #ddd;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Upcoming Events</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Event Title</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in upcoming %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>

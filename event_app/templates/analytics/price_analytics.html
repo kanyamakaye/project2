@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="analytics-container">
+    <h2>Average Price Analytics</h2>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="stat-value">${{ average_price|floatformat:2 }}</div>
+            <div class="stat-label">Average Event Price</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="stat-value">${{ highest_price|floatformat:2 }}</div>
+            <div class="stat-label">Highest Price</div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+            <div class="stat-value">${{ lowest_price|floatformat:2 }}</div>
+            <div class="stat-label">Lowest Price</div>
+        </div>
+    </div>
+    
+    <div class="analytics-card">
+        <h3>Price Distribution</h3>
+        <canvas id="priceChart"></canvas>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('priceChart').getContext('2d');
+    const priceRanges = JSON.parse('{{ price_ranges|escapejs }}');
+    const eventCounts = JSON.parse('{{ event_counts|escapejs }}');
+    
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: priceRanges,
+            datasets: [{
+                label: 'Number of Events',
+                data: eventCounts,
+                backgroundColor: '#4f46e5'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %} 

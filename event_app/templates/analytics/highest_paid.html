@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="analytics-container">
+    <h2>Highest Paid Events</h2>
+    
+    <div class="events-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Event Name</th>
+                    <th>Date</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.date|date:"M d, Y" }}</td>
+                    <td>${{ event.price|floatformat:2 }}</td>
+                    <td>{{ event.category.name }}</td>
+                    <td>
+                        <a href="{% url 'event_details' event.title %}" class="btn btn-sm">View Details</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No paid events found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,240 @@
+{
+    "categories": [
+        {
+            "id": 1,
+            "name": "I.C.T"
+        },
+        {
+            "id": 2,
+            "name": "agri-business"
+        },
+        {
+            "id": 3,
+            "name": "e-commerce"
+        },
+        {
+            "id": 4,
+            "name": "forestry"
+        },
+        {
+            "id": 5,
+            "name": "global warming"
+        },
+        {
+            "id": 6,
+            "name": "AI"
+        },
+        {
+            "id": 7,
+            "name": "cyber security"
+        },
+        {
+            "id": 8,
+            "name": "nursing"
+        },
+        {
+            "id": 9,
+            "name": "brainstorming"
+        },
+        {
+            "id": 10,
+            "name": "theology"
+        },
+        {
+            "id": 11,
+            "name": "asaph"
+        },
+        {
+            "id": 12,
+            "name": "Conference"
+        },
+        {
+            "id": 13,
+            "name": "Workshop"
+        },
+        {
+            "id": 14,
+            "name": "Seminar"
+        },
+        {
+            "id": 15,
+            "name": "Webinar"
+        },
+        {
+            "id": 16,
+            "name": "Meetup"
+        },
+        {
+            "id": 17,
+            "name": "Conference"
+        },
+        {
+            "id": 18,
+            "name": "Workshop"
+        },
+        {
+            "id": 19,
+            "name": "Seminar"
+        },
+        {
+            "id": 20,
+            "name": "Webinar"
+        },
+        {
+            "id": 21,
+            "name": "Meetup"
+        },
+        {
+            "id": 22,
+            "name": "Conference"
+        },
+        {
+            "id": 23,
+            "name": "Workshop"
+        },
+        {
+            "id": 24,
+            "name": "Seminar"
+        },
+        {
+            "id": 25,
+            "name": "Webinar"
+        },
+        {
+            "id": 26,
+            "name": "Meetup"
+        },
+        {
+            "id": 27,
+            "name": "Conference"
+        },
+        {
+            "id": 28,
+            "name": "Workshop"
+        },
+        {
+            "id": 29,
+            "name": "Seminar"
+        },
+        {
+            "id": 30,
+            "name": "Webinar"
+        },
+        {
+            "id": 31,
+            "name": "Meetup"
+        },
+        {
+            "id": 32,
+            "name": "Conference"
+        },
+        {
+            "id": 33,
+            "name": "Workshop"
+        },
+        {
+            "id": 34,
+            "name": "Seminar"
+        },
+        {
+            "id": 35,
+            "name": "Webinar"
+        },
+        {
+            "id": 36,
+            "name": "Meetup"
+        },
+        {
+            "id": 37,
+            "name": "Conference"
+        },
+        {
+            "id": 38,
+            "name": "Workshop"
+        },
+        {
+            "id": 39,
+            "name": "Seminar"
+        },
+        {
+            "id": 40,
+            "name": "Webinar"
+        },
+        {
+            "id": 41,
+            "name": "Meetup"
+        },
+        {
+            "id": 42,
+            "name": "Conference"
+        },
+        {
+            "id": 43,
+            "name": "Workshop"
+        },
+        {
+            "id": 44,
+            "name": "Seminar"
+        },
+        {
+            "id": 45,
+            "name": "Webinar"
+        },
+        {
+            "id": 46,
+            "name": "Meetup"
+        },
+        {
+            "id": 47,
+            "name": "Conference"
+        },
+        {
+            "id": 48,
+            "name": "Workshop"
+        },
+        {
+            "id": 49,
+            "name": "Seminar"
+        },
+        {
+            "id": 50,
+            "name": "Webinar"
+        },
+        {
+            "id": 51,
+            "name": "Meetup"
+        },
+        {
+            "id": 52,
+            "name": "Conference"
+        },
+        {
+            "id": 53,
+            "name": "Workshop"
+        },
+        {
+            "id": 54,
+            "name": "Seminar"
+        },
+        {
+            "id": 55,
+            "name": "Webinar"
+        },
+        {
+            "id": 56,
+            "name": "Meetup"
+        }
+    ],
+    "events": [
+        {
+            "id": 1,
+            "title": "I.C.T tips",
+            "description": "knowing about ICT tips",
+            "start_date": 20
+            
+            
+    
+        }
+       
+        ]
+}

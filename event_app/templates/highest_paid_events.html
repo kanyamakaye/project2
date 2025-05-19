@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Highest Paid Events</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            margin: 0 3px;
+            padding: 5px 10px;
+            font-size: 14px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .pagination button.disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Events with the Highest Payments</h1>
+        <input type="text" id="searchInput" onkeyup="filterTable()" placeholder="Search for events or payments...">
+
+        <table id="eventsTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Title ▲▼</th>
+                    <th onclick="sortTable(1)">Total Payment ▲▼</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                {% for event, total in events_with_payment %}
+                    <tr>
+                        <td>{{ event.title }}</td>
+                        <td>{{ total }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="pagination" id="paginationControls"></div>
+    </div>
+
+    <script>
+        const rowsPerPage = 5;
+        let currentPage = 1;
+        let sortDirection = [true, true]; // Ascending for both columns
+
+        function filterTable() {
+            currentPage = 1;
+            renderTable();
+        }
+
+        function sortTable(colIndex) {
+            const rows = Array.from(document.querySelectorAll("#tableBody tr"));
+            rows.sort((a, b) => {
+                const aText = a.children[colIndex].textContent.trim();
+                const bText = b.children[colIndex].textContent.trim();
+                const isNumeric = !isNaN(parseFloat(aText)) && isFinite(aText);
+
+                if (isNumeric) {
+                    return sortDirection[colIndex]
+                        ? parseFloat(aText) - parseFloat(bText)
+                        : parseFloat(bText) - parseFloat(aText);
+                } else {
+                    return sortDirection[colIndex]
+                        ? aText.localeCompare(bText)
+                        : bText.localeCompare(aText);
+                }
+            });
+            sortDirection[colIndex] = !sortDirection[colIndex];
+            const tbody = document.getElementById("tableBody");
+            tbody.innerHTML = "";
+            rows.forEach(row => tbody.appendChild(row));
+            renderTable();
+        }
+
+        function renderTable() {
+            const input = document.getElementById("searchInput").value.toLowerCase();
+            const allRows = Array.from(document.querySelectorAll("#tableBody tr"));
+            const filteredRows = allRows.filter(row =>
+                row.textContent.toLowerCase().includes(input)
+            );
+
+            allRows.forEach(row => row.style.display = "none");
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            filteredRows.slice(start, end).forEach(row => row.style.display = "");
+
+            renderPagination(filteredRows.length);
+        }
+
+        function renderPagination(totalRows) {
+            const pageCount = Math.ceil(totalRows / rowsPerPage);
+            const pagination = document.getElementById("paginationControls");
+            pagination.innerHTML = "";
+
+            for (let i = 1; i <= pageCount; i++) {
+                const button = document.createElement("button");
+                button.textContent = i;
+                if (i === currentPage) {
+                    button.classList.add("disabled");
+                } else {
+                    button.onclick = () => {
+                        currentPage = i;
+                        renderTable();
+                    };
+                }
+                pagination.appendChild(button);
+            }
+        }
+
+        // Initial render
+        window.onload = () => renderTable();
+    </script>
+</body>
+</html>

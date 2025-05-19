@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Participants in {{ category.name }}{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h1 class="page-title">Participants in {{ category.name }}</h1>
+            <p class="page-description">View all participants who have registered for events in this category.</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'categories' %}" class="btn btn-outline-primary back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Categories
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="stat-card bg-primary">
+                <div class="stat-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-content">
+                    <h5>Total Participants</h5>
+                    <h2>{{ participants|length }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card bg-success">
+                <div class="stat-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="stat-content">
+                    <h5>Active Participants</h5>
+                    <h2>{{ active_participants }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card bg-info">
+                <div class="stat-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="stat-content">
+                    <h5>Total Events</h5>
+                    <h2>{{ total_events }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" class="form-control" placeholder="Search participants...">
+                    </div>
+                </div>
+                <div class="col-md-6 text-end">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary active">All</button>
+                        <button class="btn btn-outline-secondary">Active</button>
+                        <button class="btn btn-outline-secondary">Inactive</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participants Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Events Attended</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for participant in participants %}
+                        <tr>
+                            <td>
+                                <div class="participant-info">
+                                    <div class="participant-name">{{ participant.name }}</div>
+                                    <small class="text-muted">ID: {{ participant.id }}</small>
+                                </div>
+                            </td>
+                            <td>{{ participant.email }}</td>
+                            <td>{{ participant.phone_number }}</td>
+                            <td>
+                                {% with events=participant.payment_set.all %}
+                                <span class="badge bg-primary">{{ events|length }}</span>
+                                {% endwith %}
+                            </td>
+                            <td>
+                                <span class="badge {% if participant.payment_set.exists %}bg-success{% else %}bg-warning{% endif %}">
+                                    {% if participant.payment_set.exists %}Active{% else %}Inactive{% endif %}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{% url 'participant_payments' participant.id %}" class="btn btn-sm btn-info" title="View Payments">
+                                        <i class="fas fa-money-bill"></i>
+                                    </a>
+                                    <a href="{% url 'edit_participant' participant.id %}" class="btn btn-sm btn-primary" title="Edit Participant">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> No participants found in this category.
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if participants.has_other_pages %}
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if participants.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ participants.previous_page_number }}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in participants.paginator.page_range %}
+                    <li class="page-item {% if participants.number == num %}active{% endif %}">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if participants.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ participants.next_page_number }}" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Google Fonts */
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Page Title */
+    .page-title {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .page-description {
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    /* Statistics Cards */
+    .stat-card {
+        border-radius: 10px;
+        padding: 20px;
+        color: white;
+        display: flex;
+        align-items: center;
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-icon {
+        font-size: 2rem;
+        margin-right: 15px;
+        opacity: 0.8;
+    }
+
+    .stat-content h5 {
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .stat-content h2 {
+        margin-bottom: 0;
+        font-weight: 600;
+    }
+
+    /* Search Box */
+    .search-box {
+        position: relative;
+    }
+
+    .search-box i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+    }
+
+    .search-box input {
+        padding-left: 40px;
+        border-radius: 20px;
+    }
+
+    /* Table Styling */
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+
+    .participant-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .participant-name {
+        font-weight: 500;
+    }
+
+    /* Badges */
+    .badge {
+        font-size: 0.8rem;
+        padding: 0.5em 1em;
+        font-weight: 500;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+        display: flex;
+        gap: 5px;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        border-radius: 5px;
+    }
+
+    /* Pagination */
+    .pagination {
+        margin-bottom: 0;
+    }
+
+    .page-link {
+        color: #2c3e50;
+        border: none;
+        margin: 0 5px;
+        border-radius: 5px;
+    }
+
+    .page-item.active .page-link {
+        background-color: #2c3e50;
+        border-color: #2c3e50;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .stat-card {
+            margin-bottom: 15px;
+        }
+
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .btn-sm {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+    }
+</style>
+{% endblock %} 

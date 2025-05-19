@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speaker Management List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #38b000;
+            --border: #dee2e6;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            padding: 40px 20px;
+            margin: 0;
+            position: relative;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--dark);
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: 600;
+            font-size: 32px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+
+        .filter-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-top: 4px solid var(--primary);
+        }
+
+        .filter-section:hover {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-form {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            position: relative;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .filter-input {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: var(--transition);
+            background-color: var(--light);
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+
+        .filter-input::placeholder {
+            color: #adb5bd;
+        }
+
+        .filter-button {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .filter-button:hover {
+            background: linear-gradient(135deg, var(--primary-dark), var(--secondary));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-weight: 500;
+            font-size: 15px;
+            position: relative;
+        }
+
+        th:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 25%;
+            height: 50%;
+            width: 1px;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        td {
+            font-size: 14px;
+            line-height: 1.5;
+            transition: var(--transition);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fa;
+            transform: scale(1.005);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .speaker-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            background-color: #f8f9fa;
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: var(--transition);
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .social-link i {
+            margin-right: 5px;
+        }
+
+        .social-link:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .linkedin {
+            color: #0077b5;
+            border: 1px solid #0077b5;
+        }
+
+        .linkedin:hover {
+            background-color: #0077b5;
+            color: white;
+        }
+
+        .twitter {
+            color: #1da1f2;
+            border: 1px solid #1da1f2;
+        }
+
+        .twitter:hover {
+            background-color: #1da1f2;
+            color: white;
+        }
+
+        .view-details {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            background-color: var(--light);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 6px;
+            transition: var(--transition);
+            font-weight: 500;
+            border: 1px solid var(--primary);
+        }
+
+        .view-details:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .view-details i {
+            margin-left: 5px;
+            font-size: 12px;
+        }
+
+        .pagination {
+            margin-top: 40px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pagination-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+            min-width: 40px;
+        }
+
+        .pagination-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .current {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            background-color: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--dark);
+            font-weight: 500;
+            box-shadow: var(--shadow);
+        }
+        
+
+        .biography-text {
+            display: -webkit-box;
+            
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 300px;
+        }
+
+        @media (max-width: 768px) {
+            .filter-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .input-group {
+                width: 100%;
+            }
+
+            th, td {
+                padding: 12px 10px;
+            }
+
+            .biography-text {
+                max-width: 150px;
+            }
+        }
+
+        /* Animation for table rows */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        tbody tr {
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
+        }
+
+        tbody tr:nth-child(1) { animation-delay: 0.1s; }
+        tbody tr:nth-child(2) { animation-delay: 0.2s; }
+        tbody tr:nth-child(3) { animation-delay: 0.3s; }
+        tbody tr:nth-child(4) { animation-delay: 0.4s; }
+        tbody tr:nth-child(5) { animation-delay: 0.5s; }
+        tbody tr:nth-child(6) { animation-delay: 0.6s; }
+        tbody tr:nth-child(7) { animation-delay: 0.7s; }
+        tbody tr:nth-child(8) { animation-delay: 0.8s; }
+        tbody tr:nth-child(9) { animation-delay: 0.9s; }
+        tbody tr:nth-child(10) { animation-delay: 1s; }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Speaker List</h1>
+        
+        <div class="filter-section">
+            <form method="GET" class="filter-form">
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" name="search" placeholder="Search by name..." class="filter-input" value="{{ request.GET.search }}">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="text" name="email" placeholder="Search by email..." class="filter-input" value="{{ request.GET.email }}">
+                </div>
+                <button type="submit" class="filter-button">
+                    <i class="fas fa-filter"></i>
+                    Filter
+                </button>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Biography</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Social Links</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for speaker in speakers %}
+                        <tr>
+                            <td><strong>{{ speaker.name }}</strong></td>
+                            <td class="biography-text">{{ speaker.biography }}</td>
+                            <td>{{ speaker.email }}</td>
+                            <td>{{ speaker.phone_number }}</td>
+                            <td class="speaker-links">
+                                <a href="{{ speaker.linkedin_link }}" target="_blank" class="social-link linkedin">
+                                    <i class="fab fa-linkedin"></i> LinkedIn
+                                </a>
+                                <a href="{{ speaker.twitter_link }}" target="_blank" class="social-link twitter">
+                                    <i class="fab fa-twitter"></i> Twitter
+                                </a>
+                            </td>
+                            <td>
+                                <a href="details/{{ speaker.id }}" class="view-details">
+                                    View Details <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="pagination">
+            <span class="step-links">
+                {% if speakers.has_previous %}
+                    <a href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.email %}&email={{ request.GET.email }}{% endif %}" class="pagination-link">
+                        <i class="fas fa-angle-double-left"></i> First
+                    </a>
+                    <a href="?page={{ speakers.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.email %}&email={{ request.GET.email }}{% endif %}" class="pagination-link">
+                        <i class="fas fa-angle-left"></i> Previous
+                    </a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ speakers.number }} of {{ speakers.paginator.num_pages }}
+                </span>
+
+                {% if speakers.has_next %}
+                    <a href="?page={{ speakers.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.email %}&email={{ request.GET.email }}{% endif %}" class="pagination-link">
+                        Next <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ speakers.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.email %}&email={{ request.GET.email }}{% endif %}" class="pagination-link">
+                        Last <i class="fas fa-angle-double-right"></i>
+                    </a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+</body>
+
+</html>

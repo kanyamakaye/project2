@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Event Categories{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Event Categories</h1>
+    
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ category.name }}</h5>
+                    <p class="card-text">
+                        <span class="badge bg-primary">{{ category.event_count }} events</span>
+                    </p>
+                    <a href="{% url 'participants_by_category' category.id %}" class="btn btn-outline-primary">
+                        View Participants
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                No categories available.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-title {
+        color: var(--primary);
+        font-weight: 600;
+    }
+    
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.5em 1em;
+    }
+    
+    .btn-outline-primary {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+    
+    .btn-outline-primary:hover {
+        background-color: var(--primary);
+        color: white;
+    }
+</style>
+{% endblock %} 

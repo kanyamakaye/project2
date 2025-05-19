@@ -1,0 +1,637 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="payments-container">
+    <h2 class="payments-title">All Payments</h2>
+    
+    <!-- Filter Section with Validation -->
+    <div class="filter-section">
+        <div class="filter-header">
+            <h3 class="filter-title">Filter Payments</h3>
+            <a href="{% url 'admin_payments' %}" class="filter-reset-button">
+                <span class="reset-icon">↺</span> Reset All Filters
+            </a>
+        </div>
+        
+        <!-- Validation message area -->
+        <div id="filter-validation-message" class="validation-message" role="alert" aria-live="polite"></div>
+        
+        <form method="get" action="" class="filter-form" id="payment-filter-form" novalidate>
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label for="status">Status</label>
+                    <select name="status" id="status" class="filter-select">
+                        <option value="">All Statuses</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="event">Event</label>
+                    <select name="event" id="event" class="filter-select">
+                        <option value="">All Events</option>
+                        {% for event in events %}
+                        <option value="{{ event.id }}">{{ event.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="payment_method">Payment Method</label>
+                    <select name="payment_method" id="payment_method" class="filter-select">
+                        <option value="">All Methods</option>
+                        <option value="credit_card">Credit Card</option>
+                        <option value="paypal">PayPal</option>
+                        <option value="bank_transfer">Bank Transfer</option>
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="date_from">Date From</label>
+                    <input type="date" name="date_from" id="date_from" class="filter-input" aria-describedby="date_from_error">
+                    <div id="date_from_error" class="input-error"></div>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="date_to">Date To</label>
+                    <input type="date" name="date_to" id="date_to" class="filter-input" aria-describedby="date_to_error">
+                    <div id="date_to_error" class="input-error"></div>
+                </div>
+                
+                <div class="filter-group amount-filter">
+                    <label for="amount_min">Min Amount</label>
+                    <input type="number" name="amount_min" id="amount_min" class="filter-input" min="0" step="0.01" placeholder="0.00" aria-describedby="amount_min_error">
+                    <div id="amount_min_error" class="input-error"></div>
+                </div>
+                
+                <div class="filter-group amount-filter">
+                    <label for="amount_max">Max Amount</label>
+                    <input type="number" name="amount_max" id="amount_max" class="filter-input" min="0" step="0.01" placeholder="0.00" aria-describedby="amount_max_error">
+                    <div id="amount_max_error" class="input-error"></div>
+                </div>
+                
+                <div class="filter-submit">
+                    <button type="submit" class="filter-button" id="apply-filters-btn">Apply Filters</button>
+                </div>
+            </div>
+        </form>
+        
+        <!-- Active filters display -->
+        <div id="active-filters" class="active-filters">
+            <!-- Active filters will be displayed here via JavaScript -->
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="payments-table">
+            <thead>
+                <tr>
+                    <th>Participant</th>
+                    <th>Event</th>
+                    <th>Amount Paid</th>
+                    <th>Payment Method</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.participant }}</td>
+                    <td>{{ payment.event }}</td>
+                    <td>{{ payment.amount_paid }}</td>
+                    <td>{{ payment.get_payment_method_display }}</td>
+                    <td class="status-cell status-{{ payment.payment_status }}">{{ payment.get_payment_status_display }}</td>
+                    <td>{{ payment.payment_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination could go here if needed -->
+</div>
+
+<!-- Simple Footer -->
+<footer class="admin-footer">
+    <div class="footer-container">
+        <div class="footer-info">
+            <p>&copy; {% now "Y" %} Your Organization. All rights reserved.</p>
+        </div>
+        <div class="footer-links">
+            <a href="#" class="footer-link">Help</a>
+            <a href="#" class="footer-link">Privacy Policy</a>
+            <a href="#" class="footer-link">Terms of Service</a>
+            <a href="#" class="footer-link">Contact Support</a>
+        </div>
+    </div>
+</footer>
+
+<!-- Google Fonts Integration -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    /* Custom styles for the payments page */
+    :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --border-color: #e5e7eb;
+        --hover-color: #f9fafb;
+        --success-color: #10b981;
+        --pending-color: #f59e0b;
+        --failed-color: #ef4444;
+        --filter-bg: #f9fafb;
+        --error-color: #ef4444;
+        --error-bg: #fee2e2;
+    }
+    
+    .payments-container {
+        font-family: 'Inter', sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+    }
+    
+    .payments-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #111827;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Filter styles */
+    .filter-section {
+        margin-bottom: 1.5rem;
+        background-color: var(--filter-bg);
+        border-radius: 0.5rem;
+        padding: 1.25rem;
+        border: 1px solid var(--border-color);
+    }
+    
+    .filter-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .filter-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #374151;
+        margin: 0;
+    }
+    
+    .filter-reset-button {
+        display: inline-flex;
+        align-items: center;
+        background-color: #fff;
+        color: #6b7280;
+        border: 1px solid var(--border-color);
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+    
+    .filter-reset-button:hover {
+        background-color: #f3f4f6;
+        color: #374151;
+    }
+    
+    .reset-icon {
+        margin-right: 0.375rem;
+        font-size: 1rem;
+    }
+    
+    /* Validation message */
+    .validation-message {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: none;
+    }
+    
+    .validation-message.error {
+        display: block;
+        background-color: var(--error-bg);
+        color: var(--error-color);
+        border: 1px solid var(--error-color);
+    }
+    
+    .validation-message.success {
+        display: block;
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #10b981;
+    }
+    
+    .filter-form {
+        width: 100%;
+    }
+    
+    .filter-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .filter-group label {
+        display: block;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.375rem;
+        color: #374151;
+    }
+    
+    .filter-select, .filter-input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.375rem;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.875rem;
+        background-color: white;
+    }
+    
+    .filter-input.error, .filter-select.error {
+        border-color: var(--error-color);
+        background-color: #fffbfa;
+    }
+    
+    .input-error {
+        color: var(--error-color);
+        font-size: 0.75rem;
+        margin-top: 0.25rem;
+        min-height: 1rem;
+    }
+    
+    .filter-submit {
+        display: flex;
+        align-items: flex-end;
+    }
+    
+    .filter-button {
+        width: 100%;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.375rem;
+        font-weight: 500;
+        cursor: pointer;
+        font-family: 'Inter', sans-serif;
+        transition: background-color 0.2s;
+    }
+    
+    .filter-button:hover {
+        background-color: var(--primary-hover);
+    }
+    
+    /* Active filters */
+    .active-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .active-filter-tag {
+        display: inline-flex;
+        align-items: center;
+        background-color: #e0e7ff;
+        color: #4338ca;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    .remove-filter {
+        margin-left: 0.375rem;
+        cursor: pointer;
+        font-weight: bold;
+    }
+    
+    /* Table styles */
+    .table-responsive {
+        overflow-x: auto;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border-radius: 0.5rem;
+    }
+    
+    .payments-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.875rem;
+    }
+    
+    .payments-table th {
+        background-color: #f9fafb;
+        padding: 0.75rem 1rem;
+        font-weight: 600;
+        color: #374151;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .payments-table td {
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-color);
+        color: #4b5563;
+    }
+    
+    .payments-table tbody tr:hover {
+        background-color: var(--hover-color);
+    }
+    
+    .status-cell {
+        font-weight: 500;
+    }
+    
+    .status-completed {
+        color: var(--success-color);
+    }
+    
+    .status-pending {
+        color: var(--pending-color);
+    }
+    
+    .status-failed {
+        color: var(--failed-color);
+    }
+    
+    /* Footer styles */
+    .admin-footer {
+        background-color: #f9fafb;
+        border-top: 1px solid var(--border-color);
+        padding: 1.5rem 0;
+        margin-top: 3rem;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    .footer-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+    }
+    
+    .footer-info {
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+    
+    .footer-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+    }
+    
+    .footer-link {
+        color: #4b5563;
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.2s;
+    }
+    
+    .footer-link:hover {
+        color: var(--primary-color);
+        text-decoration: underline;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .filter-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .filter-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        
+        .payments-table {
+            font-size: 0.75rem;
+        }
+        
+        .payments-table th,
+        .payments-table td {
+            padding: 0.5rem 0.75rem;
+        }
+        
+        .footer-container {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .footer-links {
+            justify-content: center;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('payment-filter-form');
+        const dateFrom = document.getElementById('date_from');
+        const dateTo = document.getElementById('date_to');
+        const amountMin = document.getElementById('amount_min');
+        const amountMax = document.getElementById('amount_max');
+        const validationMessage = document.getElementById('filter-validation-message');
+        const activeFiltersContainer = document.getElementById('active-filters');
+        
+        // Initialize active filters from URL parameters
+        initializeActiveFilters();
+        
+        // Form submission validation
+        form.addEventListener('submit', function(event) {
+            // Reset validation state
+            resetValidationState();
+            
+            let isValid = true;
+            let errors = [];
+            
+            // Validate date range
+            if (dateFrom.value && dateTo.value) {
+                const fromDate = new Date(dateFrom.value);
+                const toDate = new Date(dateTo.value);
+                
+                if (fromDate > toDate) {
+                    showInputError(dateFrom, 'Start date must be before end date');
+                    showInputError(dateTo, 'End date must be after start date');
+                    isValid = false;
+                    errors.push('Date range is invalid: start date must be before end date');
+                }
+            }
+            
+            // Validate amount range
+            if (amountMin.value && amountMax.value) {
+                const min = parseFloat(amountMin.value);
+                const max = parseFloat(amountMax.value);
+                
+                if (min > max) {
+                    showInputError(amountMin, 'Min amount must be less than max amount');
+                    showInputError(amountMax, 'Max amount must be greater than min amount');
+                    isValid = false;
+                    errors.push('Amount range is invalid: minimum must be less than maximum');
+                }
+            }
+            
+            // If validation fails, prevent form submission and show error message
+            if (!isValid) {
+                event.preventDefault();
+                showValidationMessage(errors.join('. '), 'error');
+                return false;
+            }
+            
+            // If we get here, form is valid
+            return true;
+        });
+        
+        // Helper functions
+        function resetValidationState() {
+            // Clear all error messages
+            const errorElements = document.querySelectorAll('.input-error');
+            errorElements.forEach(el => el.textContent = '');
+            
+            // Remove error classes from inputs
+            const inputs = form.querySelectorAll('.filter-input, .filter-select');
+            inputs.forEach(input => input.classList.remove('error'));
+            
+            // Hide validation message
+            validationMessage.classList.remove('error', 'success');
+            validationMessage.style.display = 'none';
+            validationMessage.textContent = '';
+        }
+        
+        function showInputError(inputElement, message) {
+            inputElement.classList.add('error');
+            const errorElement = document.getElementById(inputElement.id + '_error');
+            if (errorElement) {
+                errorElement.textContent = message;
+            }
+        }
+        
+        function showValidationMessage(message, type) {
+            validationMessage.textContent = message;
+            validationMessage.classList.add(type);
+            validationMessage.style.display = 'block';
+        }
+        
+        function initializeActiveFilters() {
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const filterLabels = {
+                'status': 'Status',
+                'event': 'Event',
+                'payment_method': 'Payment Method',
+                'date_from': 'From Date',
+                'date_to': 'To Date',
+                'amount_min': 'Min Amount',
+                'amount_max': 'Max Amount'
+            };
+            
+            // Clear active filters container
+            activeFiltersContainer.innerHTML = '';
+            
+            // Check if we have any filters
+            let hasFilters = false;
+            
+            // Create filter tags for each parameter
+            for (const [key, value] of urlParams.entries()) {
+                if (value && filterLabels[key]) {
+                    hasFilters = true;
+                    
+                    // Create filter tag
+                    const filterTag = document.createElement('div');
+                    filterTag.className = 'active-filter-tag';
+                    
+                    // Format the display value
+                    let displayValue = value;
+                    if (key === 'event') {
+                        // Try to get the event name from the select options
+                        const eventSelect = document.getElementById('event');
+                        const selectedOption = eventSelect.querySelector(`option[value="${value}"]`);
+                        if (selectedOption) {
+                            displayValue = selectedOption.textContent;
+                        }
+                    } else if (key === 'payment_method' || key === 'status') {
+                        // Try to get the display text from the select options
+                        const select = document.getElementById(key);
+                        const selectedOption = select.querySelector(`option[value="${value}"]`);
+                        if (selectedOption) {
+                            displayValue = selectedOption.textContent;
+                        }
+                    }
+                    
+                    filterTag.innerHTML = `${filterLabels[key]}: ${displayValue} <span class="remove-filter" data-param="${key}">×</span>`;
+                    activeFiltersContainer.appendChild(filterTag);
+                    
+                    // Set the form field value
+                    const formField = document.getElementById(key);
+                    if (formField) {
+                        formField.value = value;
+                    }
+                }
+            }
+            
+            // Show/hide the active filters section
+            if (hasFilters) {
+                activeFiltersContainer.style.display = 'flex';
+            } else {
+                activeFiltersContainer.style.display = 'none';
+            }
+            
+            // Add event listeners to remove filter buttons
+            const removeButtons = document.querySelectorAll('.remove-filter');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const param = this.getAttribute('data-param');
+                    removeFilter(param);
+                });
+            });
+        }
+        
+        function removeFilter(paramName) {
+            // Get current URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Remove the specified parameter
+            urlParams.delete(paramName);
+            
+            // Clear the form field
+            const formField = document.getElementById(paramName);
+            if (formField) {
+                formField.value = '';
+            }
+            
+            // Redirect to the updated URL
+            const newUrl = window.location.pathname + (urlParams.toString() ? '?' + urlParams.toString() : '');
+            window.location.href = newUrl;
+        }
+    });
+</script>
+{% endblock %}

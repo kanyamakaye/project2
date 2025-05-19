@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-card">
+        <div class="form-header">
+            <h2 class="form-title">Submit Information</h2>
+            <p class="form-subtitle">Please fill out the form below</p>
+        </div>
+        
+        <form method="POST" class="modern-form">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="form-group {% if field.errors %}has-error{% endif %}">
+                    <label for="{{ field.id_for_label }}" class="form-label">
+                        {{ field.label }}
+                        {% if field.field.required %}
+                            <span class="required-indicator">*</span>
+                        {% endif %}
+                    </label>
+                    
+                    {{ field }}
+                    
+                    {% if field.help_text %}
+                        <small class="help-text">{{ field.help_text }}</small>
+                    {% endif %}
+                    
+                    {% if field.errors %}
+                        <div class="error-message">
+                            {% for error in field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            {% if form.non_field_errors %}
+                <div class="non-field-errors">
+                    {% for error in form.non_field_errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <div class="form-actions">
+                <button type="submit" class="submit-button">
+                    <span class="button-text">Save</span>
+                </button>
+                <a href="javascript:history.back()" class="cancel-link">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    /* Color Variables */
+    :root {
+        --primary: #4F46E5;
+        --primary-dark: #4338CA;
+        --primary-light: #EEF2FF;
+        --secondary: #06B6D4;
+        --secondary-light: #CFFAFE;
+        --accent: #F59E0B;
+        --accent-light: #FEF3C7;
+        --success: #10B981;
+        --success-light: #D1FAE5;
+        --danger: #EF4444;
+        --danger-light: #FEE2E2;
+        --gray-50: #F9FAFB;
+        --gray-100: #F3F4F6;
+        --gray-200: #E5E7EB;
+        --gray-300: #D1D5DB;
+        --gray-400: #9CA3AF;
+        --gray-500: #6B7280;
+        --gray-600: #4B5563;
+        --gray-700: #374151;
+        --gray-800: #1F2937;
+        --gray-900: #111827;
+    }
+    
+    /* Form Container */
+    .form-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        background: linear-gradient(135deg, var(--primary-light) 0%, var(--gray-50) 100%);
+        padding: 2rem;
+        border-radius: 16px;
+    }
+    
+    /* Form Card */
+    .form-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(79, 70, 229, 0.1);
+        overflow: hidden;
+    }
+    
+    /* Form Header */
+    .form-header {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        padding: 2rem;
+        color: white;
+    }
+    
+    /* Form Title */
+    .form-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-subtitle {
+        opacity: 0.9;
+        font-weight: 300;
+    }
+    
+    /* Form Content */
+    .modern-form {
+        padding: 2rem;
+    }
+    
+    /* Form Group */
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    /* Form Label */
+    .form-label {
+        display: block;
+        font-weight: 500;
+        font-size: 0.875rem;
+        color: var(--gray-700);
+        margin-bottom: 0.5rem;
+    }
+    
+    .required-indicator {
+        color: var(--danger);
+        margin-left: 0.25rem;
+    }
+    
+    /* Form Inputs */
+    .modern-form input[type="text"],
+    .modern-form input[type="email"],
+    .modern-form input[type="password"],
+    .modern-form input[type="number"],
+    .modern-form input[type="tel"],
+    .modern-form input[type="url"],
+    .modern-form input[type="date"],
+    .modern-form textarea,
+    .modern-form select {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid var(--gray-200);
+        border-radius: 8px;
+        font-size: 1rem;
+        color: var(--gray-800);
+        transition: all 0.2s ease;
+        background-color: var(--gray-50);
+    }
+    
+    .modern-form input:focus,
+    .modern-form textarea:focus,
+    .modern-form select:focus {
+        border-color: var(--primary);
+        background-color: white;
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.2);
+    }
+    
+    /* Checkbox and Radio styling */
+    .modern-form input[type="checkbox"],
+    .modern-form input[type="radio"] {
+        margin-right: 0.5rem;
+        accent-color: var(--primary);
+    }
+    
+    /* Help Text */
+    .help-text {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--gray-500);
+    }
+    
+    /* Error Styling */
+    .has-error input,
+    .has-error textarea,
+    .has-error select {
+        border-color: var(--danger);
+        background-color: var(--danger-light);
+    }
+    
+    .error-message {
+        color: var(--danger);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .error-message:before {
+        content: "⚠️";
+        margin-right: 0.5rem;
+    }
+    
+    .non-field-errors {
+        background-color: var(--danger-light);
+        border-left: 4px solid var(--danger);
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Form Actions */
+    .form-actions {
+        display: flex;
+        align-items: center;
+        margin-top: 2rem;
+    }
+    
+    /* Submit Button */
+    .submit-button {
+        background: linear-gradient(to right, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 6px rgba(79, 70, 229, 0.25);
+    }
+    
+    .submit-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 10px rgba(79, 70, 229, 0.3);
+    }
+    
+    .submit-button:active {
+        transform: translateY(1px);
+    }
+    
+    .submit-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.5);
+    }
+    
+    /* Cancel Link */
+    .cancel-link {
+        margin-left: 1rem;
+        color: var(--gray-600);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.2s ease;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+    }
+    
+    .cancel-link:hover {
+        color: var(--gray-900);
+        background-color: var(--gray-100);
+    }
+    
+    /* Field Focus Animation */
+    .modern-form input:not([type="checkbox"]):not([type="radio"]):focus,
+    .modern-form textarea:focus,
+    .modern-form select:focus {
+        transform: translateY(-2px);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .form-container {
+            padding: 1rem;
+        }
+        
+        .form-header,
+        .modern-form {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock content %}

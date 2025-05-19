@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Analytics Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Admin Analytics Dashboard</h1>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Events</h5>
+                    <h2 class="text-primary">{{ total_events }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Paid Events</h5>
+                    <h2 class="text-success">{{ paid_events }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Free Events</h5>
+                    <h2 class="text-info">{{ free_events }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Total Revenue</h5>
+                    <h2 class="text-success">${{ total_revenue }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Participant Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Participant Statistics</h5>
+                    <div class="row">
+                        <div class="col-6">
+                            <p class="mb-1">Total Participants:</p>
+                            <h4>{{ total_participants }}</h4>
+                        </div>
+                        <div class="col-6">
+                            <p class="mb-1">Active Participants:</p>
+                            <h4>{{ active_participants }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">Recent Payments</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Participant</th>
+                                    <th>Event</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in recent_payments %}
+                                <tr>
+                                    <td>{{ payment.participant.name }}</td>
+                                    <td>{{ payment.event.title }}</td>
+                                    <td>${{ payment.amount }}</td>
+                                    <td>{{ payment.payment_date|date:"M d, Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Quick Links</h5>
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="{% url 'admin_events' %}" class="btn btn-outline-primary">Manage Events</a>
+                        <a href="{% url 'admin_participants' %}" class="btn btn-outline-primary">Manage Participants</a>
+                        <a href="{% url 'admin_payments' %}" class="btn btn-outline-primary">View All Payments</a>
+                        <a href="{% url 'admin_speakers' %}" class="btn btn-outline-primary">Manage Speakers</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .table th {
+        background-color: #f8f9fa;
+    }
+</style>
+{% endblock %} 

@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Event Management System (OEMS)</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Add Chart.js for analytics -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Maps API (replace YOUR_API_KEY) -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #f97316;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+        }
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+        }
+        .btn-hero {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            margin: 0 10px;
+        }
+        .card-section {
+            padding: 60px 0;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .testimonial-section {
+            background-color: #f1f5f9;
+            padding: 60px 0;
+        }
+        .testimonial-card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        .testimonial-author {
+            font-weight: 600;
+        }
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .footer-links a:hover {
+            color: var(--secondary);
+        }
+        .social-icons a {
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 15px;
+        }
+        .social-icons a:hover {
+            color: var(--secondary);
+        }
+        /* Analytics section styles */
+        .analytics-section {
+            background-color: #f8f9fa;
+            padding: 60px 0;
+            display: none; /* Hidden by default, shown only for admins */
+        }
+        .analytics-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+        .stat-label {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        .chart-header {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        /* Map and speaker section styles */
+        .map-section {
+            padding: 60px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .section-header h2 {
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .section-header p {
+            color: var(--gray);
+        }
+        
+        .speaker-section {
+            padding: 60px 0;
+        }
+        
+        .speaker-section .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+        
+        .speaker-section .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .speaker-section .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        
+        .speaker-section .social-links {
+            font-size: 1.2rem;
+        }
+        #event-map {
+            height: 500px;
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">OEMS</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/events/">Events</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/speakers/">Speakers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/schedule/">Schedule</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/participants/">Participants</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/categories/">Categories</a></li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" href="/login/">Admin</a></li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="hero-title">Plan. Attend. Connect.</h1>
+            <p class="hero-subtitle">Manage Your Events Seamlessly</p>
+            <div class="hero-buttons">
+                <a href="events/" class="btn btn-primary btn-hero">View All Events</a>
+                <a href="/participant-form/" class="btn btn-outline-light btn-hero">Register Now</a>
+                <a href="/dashboard/" class="btn btn-success btn-hero" id="dashboard-btn" style="display:none;">Dashboard</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Access Cards -->
+    <section class="card-section">
+        <div class="container">
+            <div class="row">
+                <!-- Events Card -->
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <i class="fas fa-calendar-alt card-icon"></i>
+                        <h3 class="card-title">Events</h3>
+                        <p>Browse and manage all events</p>
+                        <div class="mt-3">
+                            <a href="events/paid/" class="btn btn-sm btn-outline-primary me-2">Paid Events</a>
+                            <a href="/events/free/" class="btn btn-sm btn-outline-primary">Free Events</a>
+                        </div>
+                        <div class="mt-2">
+                            <a href="/upcoming/" class="btn btn-sm btn-outline-primary">Upcoming Events</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming Events Card -->
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <i class="fas fa-clock card-icon"></i>
+                        <h3 class="card-title">Upcoming Events</h3>
+                        <p>Discover events happening soon</p>
+                        <div id="upcoming-events-list" class="mt-3">
+                            <!-- Dynamic content will be loaded here -->
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div class="mt-2">
+                            <a href="/upcoming/" class="btn btn-sm btn-outline-primary">View All</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Speakers Card -->
+                <div class="col-md-4">
+                    <div class="card h-100 text-center p-4">
+                        <i class="fas fa-microphone card-icon"></i>
+                        <h3 class="card-title">Speakers</h3>
+                        <p>View and manage event speakers</p>
+                        <div class="mt-3">
+                            <a href="/speakers/" class="btn btn-sm btn-outline-primary me-2">View All</a>
+                            <a href="/speaker-form/" class="btn btn-sm btn-outline-primary" id="add-speaker-btn" style="display:none;">Add Speaker</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interactive Map Section -->
+    <section class="map-section" id="map-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Event Locations in Rwanda</h2>
+                <p>Explore upcoming events across the country</p>
+            </div>
+            <!-- Static Google Maps Embed -->
+            <iframe 
+                id="event-map"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.634234381496!2d30.061208315331455!3d-1.940353998713196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca76b4418c245%3A0x1b9e49a93d548f3f!2sKigali%20Convention%20Centre!5e0!3m2!1sen!2srw!4v1620000000000!5m2!1sen!2srw"
+                width="100%" 
+                height="500" 
+                style="border:0; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+                allowfullscreen="" 
+                loading="lazy">
+            </iframe>
+        </div>
+    </section>
+
+    <!-- New Speaker Announcements Section -->
+    <section class="speaker-section" id="speaker-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>New Speaker Announcements</h2>
+                <p>Meet our latest speakers and their upcoming events</p>
+            </div>
+            <div class="row" id="new-speakers-list">
+                <!-- Dynamic content will be loaded here -->
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Analytics Section (Admin Only) -->
+    <section class="analytics-section" id="analytics-section">
+        <div class="container">
+            <div class="analytics-header">
+                <h2>System Analytics</h2>
+                <p>Comprehensive insights and statistics for administrators</p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="analytics-grid">
+                <div class="stat-card">
+                    <i class="fas fa-calendar-alt fa-2x"></i>
+                    <div class="stat-value" id="event-count">0</div>
+                    <div class="stat-label">Total Events</div>
+                    <a href="/event-count/" class="btn btn-sm btn-outline-primary mt-2">Details</a>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-users fa-2x"></i>
+                    <div class="stat-value" id="participant-count">0</div>
+                    <div class="stat-label">Total Participants</div>
+                    <a href="/analytics/participant-stats/" class="btn btn-sm btn-outline-primary mt-2">Details</a>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-dollar-sign fa-2x"></i>
+                    <div class="stat-value" id="total-revenue">$0</div>
+                    <div class="stat-label">Total Revenue</div>
+                    <a href="/analytics/event-stats/" class="btn btn-sm btn-outline-primary mt-2">Details</a>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-tag fa-2x"></i>
+                    <div class="stat-value" id="avg-price">$0</div>
+                    <div class="stat-label">Avg. Event Price</div>
+                    <a href="/analytics/average-price/" class="btn btn-sm btn-outline-primary mt-2">Details</a>
+                </div>
+            </div>
+
+            <!-- Charts Row 1 -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h4>Revenue Over Time</h4>
+                            <a href="/api/dashboard/revenue/" class="btn btn-sm btn-outline-primary">View Data</a>
+                        </div>
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h4>Events by Category</h4>
+                            <a href="/api/dashboard/categories/" class="btn btn-sm btn-outline-primary">View Data</a>
+                        </div>
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Row 2 -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h4>Participant Distribution</h4>
+                            <a href="/analytics/participant-stats/" class="btn btn-sm btn-outline-primary">View Data</a>
+                        </div>
+                        <canvas id="participantChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h4>Payment Status</h4>
+                            <a href="/analytics/event-stats/" class="btn btn-sm btn-outline-primary">View Data</a>
+                        </div>
+                        <canvas id="paymentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Events Section -->
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h4>Top Revenue Events</h4>
+                    <a href="/analytics/top-revenue/" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <canvas id="topEventsChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonial-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."</div>
+                        <div class="testimonial-author">- John Doe</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."</div>
+                        <div class="testimonial-author">- Jane Smith</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card">
+                        <div class="testimonial-text">"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."</div>
+                        <div class="testimonial-author">- Bob Johnson</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Gallery Section -->
+    <section class="gallery-section" id="gallery-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Event Gallery</h2>
+                <p>Relive the memories from our past events</p>
+            </div>
+
+            <!-- File Upload Form (Admin Only) -->
+            <div id="upload-form" style="display: none;">
+                <form id="gallery-upload-form" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="event-image" class="form-label">Upload Event Image</label>
+                        <input type="file" class="form-control" id="event-image" name="event-image" accept="image/*" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="event-name" class="form-label">Event Name</label>
+                        <input type="text" class="form-control" id="event-name" name="event-name" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="row" id="gallery-grid">
+                <!-- Dynamic content will be loaded here -->
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h4>About Us</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4>Quick Links</h4>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/events/">Events</a></li>
+                        <li><a href="/speakers/">Speakers</a></li>
+                        <li><a href="/schedule/">Schedule</a></li>
+                        <li><a href="/participants/">Participants</a></li>
+                        <li><a href="/categories/">Categories</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h4>Contact Us</h4>
+                    <p>123 Event Street, Kigali, Rwanda</p>
+                    <p>+250 123 456 789</p>
+                    <p>info@oems.com</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Main JavaScript -->
+    <script>
+        // Fetch upcoming events from the backend
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/api/upcoming-events/')
+                .then(response => response.json())
+                .then(data => {
+                    const upcomingEventsList = document.getElementById('upcoming-events-list');
+                    upcomingEventsList.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        upcomingEventsList.innerHTML = '<p>No upcoming events</p>';
+                        return;
+                    }
+
+                    // Display the first 3 upcoming events
+                    data.slice(0, 3).forEach(event => {
+                        const eventElement = document.createElement('div');
+                        eventElement.className = 'mb-2';
+                        eventElement.innerHTML = `
+                            <a href="/event/${event.id}/" class="text-decoration-none">
+                                <strong>${event.title}</strong><br>
+                                <small>${new Date(event.start_date).toLocaleDateString()}</small>
+                            </a>
+                        `;
+                        upcomingEventsList.appendChild(eventElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching upcoming events:', error);
+                    document.getElementById('upcoming-events-list').innerHTML = 
+                        '<p class="text-danger">Error loading events</p>';
+                });
+
+            // Check if user is admin to show admin-specific buttons
+            fetch('/api/check-auth/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isAdmin) {
+                        document.getElementById('dashboard-btn').style.display = 'inline-block';
+                        document.getElementById('add-speaker-btn').style.display = 'inline-block';
+                        document.getElementById('analytics-section').style.display = 'block';
+                        document.getElementById('upload-form').style.display = 'block';
+                        
+                        // Load analytics data
+                        loadAnalyticsData();
+                    }
+                });
+
+            // Load event map
+            loadEventMap();
+            
+            // Load new speakers
+            loadNewSpeakers();
+            
+            // Load gallery images
+            loadGalleryImages();
+            
+            // Create sample admin user (for development only)
+            createSampleAdmin();
+        });
+
+        // Analytics data loading function
+        function loadAnalyticsData() {
+            // Fetch summary data
+            fetch('/api/dashboard/summary/')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('event-count').textContent = data.total_events;
+                    document.getElementById('participant-count').textContent = data.total_participants;
+                    document.getElementById('total-revenue').textContent = '$' + data.total_revenue;
+                    document.getElementById('avg-price').textContent = '$' + data.avg_price;
+                });
+
+            // Fetch and render charts
+            fetch('/api/dashboard/revenue/')
+                .then(response => response.json())
+                .then(data => {
+                    renderLineChart('revenueChart', 'Revenue', data.labels, data.values, 'rgb(75, 192, 192)');
+                });
+
+            fetch('/api/dashboard/categories/')
+                .then(response => response.json())
+                .then(data => {
+                    renderBarChart('categoryChart', 'Events by Category', data.labels, data.values);
+                });
+
+            fetch('/analytics/participant-stats/')
+                .then(response => response.json())
+                .then(data => {
+                    renderPieChart('participantChart', 'Participant Distribution', data.labels, data.values);
+                });
+
+            fetch('/analytics/event-stats/')
+                .then(response => response.json())
+                .then(data => {
+                    renderDoughnutChart('paymentChart', 'Payment Status', ['Paid', 'Unpaid'], [data.paid, data.unpaid]);
+                });
+
+            fetch('/analytics/top-revenue/')
+                .then(response => response.json())
+                .then(data => {
+                    renderHorizontalBarChart('topEventsChart', 'Top Revenue Events', data.labels, data.values);
+                });
+        }
+
+        // Chart rendering functions
+        function renderLineChart(canvasId, label, labels, data, color) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: color,
+                        backgroundColor: color.replace('rgb', 'rgba').replace(')', ', 0.2)'),
+                        tension: 0.1,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderBarChart(canvasId, label, labels, data) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderPieChart(canvasId, label, labels, data) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderDoughnutChart(canvasId, label, labels, data) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderHorizontalBarChart(canvasId, label, labels, data) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Create sample admin user (for development only)
+        function createSampleAdmin() {
+            const sampleAdmin = {
+                firstName: 'Admin',
+                lastName: 'User',
+                username: 'admin',
+                email: 'admin@example.com',
+                password: 'admin123',
+                isAdmin: true
+            };
+
+            // Check if sample admin already exists
+            const users = JSON.parse(sessionStorage.getItem('eventflow_users') || '[]');
+            const adminExists = users.some(user => user.username === 'admin');
+            
+            if (!adminExists) {
+                users.push(sampleAdmin);
+                sessionStorage.setItem('eventflow_users', JSON.stringify(users));
+                console.log('Sample admin user created:', sampleAdmin);
+            }
+        }
+
+        function loadEventMap() {
+            fetch('/api/event-locations/')
+                .then(response => response.json())
+                .then(data => {
+                    const mapContainer = document.getElementById('event-map');
+                    
+                    if (data.length > 0) {
+                        // Initialize Google Map centered on Rwanda
+                        const map = new google.maps.Map(mapContainer, {
+                            center: { lat: -1.9403, lng: 29.8739 }, // Rwanda coordinates
+                            zoom: 7,
+                            styles: [
+                                {
+                                    "featureType": "poi",
+                                    "stylers": [{ "visibility": "off" }]  // Hide points of interest
+                                }
+                            ]
+                        });
+
+                        // Add markers for each event
+                        data.forEach(event => {
+                            if (event.latitude && event.longitude) {
+                                new google.maps.Marker({
+                                    position: { lat: event.latitude, lng: event.longitude },
+                                    map: map,
+                                    title: event.title,
+                                    icon: {
+                                        url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png"
+                                    }
+                                });
+                            }
+                        });
+                    } else {
+                        mapContainer.innerHTML = 
+                            '<div class="alert alert-warning">No upcoming events with locations found</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading event locations:', error);
+                    document.getElementById('event-map').innerHTML = 
+                        '<div class="alert alert-danger">Error loading map data</div>';
+                });
+        }
+
+        function loadNewSpeakers() {
+            fetch('/api/new-speakers/')
+                .then(response => response.json())
+                .then(data => {
+                    const speakersList = document.getElementById('new-speakers-list');
+                    speakersList.innerHTML = '';
+                    
+                    if (data.length === 0) {
+                        speakersList.innerHTML = '<p class="text-center">No new speakers to display</p>';
+                        return;
+                    }
+
+                    // Display new speakers
+                    data.forEach(speaker => {
+                        const col = document.createElement('div');
+                        col.className = 'col-md-4 mb-4';
+                        col.innerHTML = `
+                            <div class="card h-100">
+                                <img src="${speaker.image || '/static/images/speaker-default.jpg'}" 
+                                     class="card-img-top" alt="${speaker.name}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${speaker.name}</h5>
+                                    <p class="card-text">${speaker.bio.substring(0, 100)}...</p>
+                                    <div class="social-links mb-2">
+                                        ${speaker.twitter ? `<a href="${speaker.twitter}" class="text-primary me-2"><i class="fab fa-twitter"></i></a>` : ''}
+                                        ${speaker.linkedin ? `<a href="${speaker.linkedin}" class="text-primary me-2"><i class="fab fa-linkedin"></i></a>` : ''}
+                                        ${speaker.website ? `<a href="${speaker.website}" class="text-primary me-2"><i class="fas fa-globe"></i></a>` : ''}
+                                    </div>
+                                    <a href="/speaker/${speaker.id}/" class="btn btn-sm btn-outline-primary">View Profile</a>
+                                    <a href="/events/?speaker=${speaker.id}" class="btn btn-sm btn-outline-secondary ms-2">Their Events</a>
+                                </div>
+                            </div>
+                        `;
+                        speakersList.appendChild(col);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading new speakers:', error);
+                    document.getElementById('new-speakers-list').innerHTML = 
+                        '<p class="text-danger text-center">Error loading speaker data</p>';
+                });
+        }
+
+        // Fetch and display gallery images
+        function loadGalleryImages() {
+            fetch('/api/gallery-images/')
+                .then(response => response.json())
+                .then(data => {
+                    const galleryGrid = document.getElementById('gallery-grid');
+                    galleryGrid.innerHTML = '';
+
+                    if (data.length === 0) {
+                        galleryGrid.innerHTML = '<p class="text-center">No images to display</p>';
+                        return;
+                    }
+
+                    data.forEach(image => {
+                        const col = document.createElement('div');
+                        col.className = 'col-md-4 mb-4';
+                        col.innerHTML = `
+                            <div class="card h-100">
+                                <img src="${image.url}" class="card-img-top" alt="${image.event_name}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${image.event_name}</h5>
+                                </div>
+                            </div>
+                        `;
+                        galleryGrid.appendChild(col);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading gallery images:', error);
+                    document.getElementById('gallery-grid').innerHTML = 
+                        '<p class="text-danger text-center">Error loading gallery images</p>';
+                });
+        }
+
+        // Handle form submission for uploading images
+        document.getElementById('gallery-upload-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/api/upload-gallery-image/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Image uploaded successfully!');
+                    loadGalleryImages();
+                } else {
+                    alert('Error uploading image: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error uploading image:', error);
+                alert('Error uploading image');
+            });
+        });
+    </script>
+</body>
+</html>

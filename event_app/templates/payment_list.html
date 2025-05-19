@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Payment Details</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Participant</th>
+            <th>Event</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Transaction ID</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for payment in payments %}
+        <tr>
+            <td>{{ payment.participant }}</td>
+            <td>{{ payment.event }}</td>
+            <td>{{ payment.amount_paid }}</td>
+            <td>{{ payment.get_payment_method_display }}</td>
+            <td>{{ payment.get_payment_status_display }}</td>
+            <td>{{ payment.payment_date }}</td>
+            <td>{{ payment.transaction_id }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

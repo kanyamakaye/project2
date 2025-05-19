@@ -1,0 +1,124 @@
+.analytics-container {
+    padding: var(--spacing-xl);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.analytics-container h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    color: var(--dark);
+}
+
+.analytics-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+}
+
+.analytics-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--card-shadow);
+}
+
+.analytics-card h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    color: var(--dark);
+}
+
+.price {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--primary);
+    margin: var(--spacing-md) 0;
+}
+
+.events-table {
+    overflow-x: auto;
+}
+
+.events-table table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.events-table th {
+    background-color: var(--gray-light);
+    padding: var(--spacing-md);
+    font-weight: 600;
+    text-align: left;
+    color: var(--dark);
+}
+
+.events-table td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--gray-light);
+}
+
+.events-table tr:last-child td {
+    border-bottom: none;
+}
+
+.events-table tr:hover td {
+    background-color: rgba(79, 70, 229, 0.05);
+}
+
+.category-chart {
+    height: 400px;
+    margin-top: var(--spacing-lg);
+}
+
+.stat-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--card-shadow);
+    text-align: center;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+    font-size: 24px;
+}
+
+.stat-value {
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    color: var(--gray);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .analytics-container {
+        padding: var(--spacing-md);
+    }
+    
+    .analytics-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .events-table {
+        margin: 0 -var(--spacing-md);
+    }
+} 

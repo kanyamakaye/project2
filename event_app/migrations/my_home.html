@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <!-- Add Bootstrap CDN link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f2f2f2;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .jumbotron {
+            background-color: #f9f9f9;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .display-4 {
+            font-size: 48px;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .lead {
+            font-size: 24px;
+            color: #444;
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            font-size: 20px;
+            padding: 15px 40px;
+            transition: background-color 0.3s ease;
+            border-radius: 30px;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .event-image {
+            max-width: 100%;
+            border-radius: 20px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .feature-item {
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 72px; /* Adjust the icon size as needed */
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .feature-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container center">
+        <div class="jumbotron">
+            <h1 class="display-4">Welcome to our Event Management</h1>
+            <p class="lead">Plan and organize your events with ease!</p>
+            <a href="#" class="btn btn-primary">Get Started</a>
+        </div>
+
+        <div class="features">
+            <div class="feature-item">
+                <div class="feature-icon">🎉</div>
+                <div class="feature-title">Create Memorable Events</div>
+                <div class="feature-description">Plan and host events that leave a lasting impression on your attendees.</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">📅</div>
+                <div class="feature-title">Efficient Event Scheduling</div>
+                <div class="feature-description">Manage event dates, times, and venues in a convenient and organized manner.</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💼</div>
+                <div class="feature-title">Seamless Speaker Management</div>
+                <div class="feature-description">Easily manage and coordinate speakers for your events.</div>
+            </div>
+        </div>
+
+        <p>Discover the power of our event management application and unlock endless possibilities for your events.</p>
+    </div>
+
+    <!-- Add Bootstrap JS CDN link -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

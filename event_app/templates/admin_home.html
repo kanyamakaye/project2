@@ -1,0 +1,254 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Header Section -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Admin Dashboard</h1>
+        <div class="d-flex gap-2">
+            <a href="{% url 'admin_analytics' %}" class="btn btn-primary">
+                <i class="fas fa-chart-line"></i> Analytics
+            </a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-danger">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Events</h6>
+                            <h3 class="mb-0">{{ total_events }}</h3>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-calendar-alt text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Participants</h6>
+                            <h3 class="mb-0">{{ total_participants }}</h3>
+                        </div>
+                        <div class="bg-success bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-users text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Total Revenue</h6>
+                            <h3 class="mb-0">${{ total_revenue }}</h3>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-dollar-sign text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-2">Active Speakers</h6>
+                            <h3 class="mb-0">{{ total_speakers }}</h3>
+                        </div>
+                        <div class="bg-info bg-opacity-10 p-3 rounded">
+                            <i class="fas fa-microphone text-info"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Management Sections -->
+    <div class="row">
+        <!-- Events Management -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Events Management</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin_events' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-calendar"></i> All Events
+                        </a>
+                        <a href="{% url 'admin_paid_events' %}" class="btn btn-outline-success">
+                            <i class="fas fa-ticket-alt"></i> Paid Events
+                        </a>
+                        <a href="{% url 'admin_free_events' %}" class="btn btn-outline-info">
+                            <i class="fas fa-gift"></i> Free Events
+                        </a>
+                        <a href="{% url 'event_forms' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-plus"></i> Add New Event
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Participants Management -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Participants Management</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin_participants' %}" class="btn btn-outline-success">
+                            <i class="fas fa-users"></i> All Participants
+                        </a>
+                        <a href="{% url 'participant_forms' %}" class="btn btn-outline-success">
+                            <i class="fas fa-user-plus"></i> Add New Participant
+                        </a>
+                        <a href="{% url 'participants_with_all_payments' %}" class="btn btn-outline-success">
+                            <i class="fas fa-check-circle"></i> Fully Paid Participants
+                        </a>
+                        <a href="{% url 'top_paying_participants' %}" class="btn btn-outline-success">
+                            <i class="fas fa-crown"></i> Top Paying Participants
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Speakers Management -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Speakers Management</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin_speakers' %}" class="btn btn-outline-info">
+                            <i class="fas fa-microphone"></i> All Speakers
+                        </a>
+                        <a href="{% url 'speaker_forms' %}" class="btn btn-outline-info">
+                            <i class="fas fa-user-plus"></i> Add New Speaker
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories & Schedule -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">Categories & Schedule</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin_categories' %}" class="btn btn-outline-warning">
+                            <i class="fas fa-tags"></i> Manage Categories
+                        </a>
+                        <a href="{% url 'cat_forms' %}" class="btn btn-outline-warning">
+                            <i class="fas fa-plus"></i> Add New Category
+                        </a>
+                        <a href="{% url 'admin_schedule' %}" class="btn btn-outline-warning">
+                            <i class="fas fa-calendar-alt"></i> Manage Schedule
+                        </a>
+                        <a href="{% url 'schedule_forms' %}" class="btn btn-outline-warning">
+                            <i class="fas fa-plus"></i> Add New Schedule
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payments & Analytics -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">Payments & Analytics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'admin_payments' %}" class="btn btn-outline-danger">
+                            <i class="fas fa-money-bill-wave"></i> All Payments
+                        </a>
+                        <a href="{% url 'event_statistics' %}" class="btn btn-outline-danger">
+                            <i class="fas fa-chart-bar"></i> Event Statistics
+                        </a>
+                        <a href="{% url 'participant_statistics' %}" class="btn btn-outline-danger">
+                            <i class="fas fa-chart-pie"></i> Participant Statistics
+                        </a>
+                        <a href="{% url 'average_price_analytics' %}" class="btn btn-outline-danger">
+                            <i class="fas fa-chart-line"></i> Price Analytics
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Features -->
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Additional Features</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'highest_paid_events' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-star"></i> Highest Paid Events
+                        </a>
+                        <a href="{% url 'top_revenue_events' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-trophy"></i> Top Revenue Events
+                        </a>
+                        <a href="{% url 'recent_payers' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-clock"></i> Recent Payers
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .card-header {
+        font-weight: 600;
+    }
+    .btn {
+        text-align: left;
+        padding: 0.75rem 1rem;
+    }
+    .btn i {
+        margin-right: 0.5rem;
+        width: 20px;
+    }
+    .bg-opacity-10 {
+        background-color: rgba(var(--bs-primary-rgb), 0.1);
+    }
+</style>
+{% endblock %} 

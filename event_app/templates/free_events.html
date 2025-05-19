@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Free Events</h2>
+<ul>
+  {% for event in events %}
+    <li>{{ event.title }} ({{ event.start_date }} - {{ event.end_date }}) - Free</li>
+  {% empty %}
+    <li>No free events available.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title|default:'Add Payment' }}{% endblock %}
+
+{% block content %}
+<div class="payment-form-container">
+    <div class="header">
+        <h1>{{ title|default:'Add New Payment' }}</h1>
+        <a href="{% url 'display_payment' %}" class="btn">
+            <i class="fas fa-arrow-left"></i> Back to Payment List
+        </a>
+    </div>
+
+    <div class="form-wrapper">
+        <form method="POST" class="payment-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.participant.id_for_label }}">Participant</label>
+                {{ form.participant }}
+                {% if form.participant.errors %}
+                    <div class="error-message">{{ form.participant.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.event.id_for_label }}">Event</label>
+                {{ form.event }}
+                {% if form.event.errors %}
+                    <div class="error-message">{{ form.event.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.amount_paid.id_for_label }}">Amount Paid</label>
+                {{ form.amount_paid }}
+                {% if form.amount_paid.errors %}
+                    <div class="error-message">{{ form.amount_paid.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.payment_method.id_for_label }}">Payment Method</label>
+                {{ form.payment_method }}
+                {% if form.payment_method.errors %}
+                    <div class="error-message">{{ form.payment_method.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.transaction_id.id_for_label }}">Transaction ID</label>
+                {{ form.transaction_id }}
+                {% if form.transaction_id.errors %}
+                    <div class="error-message">{{ form.transaction_id.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.payment_status.id_for_label }}">Payment Status</label>
+                {{ form.payment_status }}
+                {% if form.payment_status.errors %}
+                    <div class="error-message">{{ form.payment_status.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.card_number.id_for_label }}">Card Number</label>
+                {{ form.card_number }}
+                {% if form.card_number.errors %}
+                    <div class="error-message">{{ form.card_number.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.cardholder_name.id_for_label }}">Cardholder Name</label>
+                {{ form.cardholder_name }}
+                {% if form.cardholder_name.errors %}
+                    <div class="error-message">{{ form.cardholder_name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> {{ title|default:'Add' }} Payment
+                </button>
+                <a href="{% url 'display_payment' %}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .payment-form-container {
+        max-width: 700px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+
+    .form-wrapper {
+        background: white;
+        padding: 30px;
+        border-radius: var(--border-radius);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .payment-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: var(--dark);
+    }
+
+    .form-group input, .form-group select {
+        padding: 10px;
+        border: 1px solid var(--gray-light);
+        border-radius: 4px;
+        font-size: 16px;
+        transition: var(--transition);
+    }
+
+    .form-group input:focus, .form-group select:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1);
+    }
+
+    .error-message {
+        color: var(--error);
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: var(--gray-light);
+        color: var(--dark);
+    }
+
+    @media (max-width: 768px) {
+        .header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+<hr>
+<h2>Payment History</h2>
+
+{% if payments %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Participant</th>
+                <th>Event</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Transaction ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.participant }}</td>
+                <td>{{ payment.event }}</td>
+                <td>{{ payment.amount_paid }}</td>
+                <td>{{ payment.payment_method }}</td>
+                <td>{{ payment.payment_status }}</td>
+                <td>{{ payment.payment_date }}</td>
+                <td>{{ payment.transaction_id }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No payments recorded yet.</p>
+{% endif %}

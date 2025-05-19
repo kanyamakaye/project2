@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Average Price Analytics{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Average Price Analytics</h1>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Overall Average Price</h5>
+                </div>
+                <div class="card-body">
+                    <h3 class="text-primary">${{ overall_avg_price|floatformat:2 }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Average Prices by Category</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Average Price</th>
+                            <th>Number of Events</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in category_avg_prices %}
+                        <tr>
+                            <td>{{ category.name }}</td>
+                            <td>${{ category.avg_price|floatformat:2 }}</td>
+                            <td>{{ category.event_management__count }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center">No data available</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

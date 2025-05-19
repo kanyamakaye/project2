@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="payment-container">
+    <h2 class="payment-title">Make a Payment</h2>
+    
+    <div class="payment-card">
+        <form method="post" class="payment-form">
+            {% csrf_token %}
+            
+            <div class="form-fields">
+                {{ form.as_p }}
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="payment-button">Submit Payment</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Google Fonts Integration -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    /* Payment Form Styles */
+    :root {
+        --primary-color: #4f46e5;
+        --primary-hover: #4338ca;
+        --text-color: #1f2937;
+        --label-color: #4b5563;
+        --border-color: #e5e7eb;
+        --background-color: #f9fafb;
+        --card-background: #ffffff;
+        --error-color: #ef4444;
+        --success-color: #10b981;
+    }
+    
+    /* Base styles */
+    .payment-container {
+        font-family: 'Nunito', sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+        color: var(--text-color);
+    }
+    
+    .payment-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-color);
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+    
+    .payment-card {
+        background-color: var(--card-background);
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        padding: 2rem;
+    }
+    
+    /* Form styles */
+    .payment-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .form-fields {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    /* Style Django's form paragraphs */
+    .payment-form p {
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Style form labels */
+    .payment-form label {
+        display: block;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: var(--label-color);
+        margin-bottom: 0.375rem;
+    }
+    
+    /* Style form inputs */
+    .payment-form input[type="text"],
+    .payment-form input[type="email"],
+    .payment-form input[type="number"],
+    .payment-form input[type="date"],
+    .payment-form select,
+    .payment-form textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.375rem;
+        font-family: 'Nunito', sans-serif;
+        font-size: 1rem;
+        color: var(--text-color);
+        background-color: #ffffff;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .payment-form input[type="text"]:focus,
+    .payment-form input[type="email"]:focus,
+    .payment-form input[type="number"]:focus,
+    .payment-form input[type="date"]:focus,
+    .payment-form select:focus,
+    .payment-form textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    
+    /* Style form help text */
+    .payment-form .helptext {
+        display: block;
+        font-size: 0.75rem;
+        color: var(--label-color);
+        margin-top: 0.25rem;
+    }
+    
+    /* Style form errors */
+    .payment-form .errorlist {
+        list-style-type: none;
+        padding: 0;
+        margin: 0.25rem 0 0 0;
+        color: var(--error-color);
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+    
+    /* Button styles */
+    .form-actions {
+        margin-top: 1rem;
+    }
+    
+    .payment-button {
+        display: block;
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 0.375rem;
+        font-family: 'Nunito', sans-serif;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    
+    .payment-button:hover {
+        background-color: var(--primary-hover);
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        .payment-card {
+            padding: 1.5rem;
+        }
+        
+        .payment-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}

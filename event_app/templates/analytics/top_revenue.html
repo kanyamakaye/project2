@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="analytics-container">
+    <h2>Top Revenue Events</h2>
+    
+    <div class="events-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Event Name</th>
+                    <th>Date</th>
+                    <th>Total Revenue</th>
+                    <th>Participants</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                <tr>
+                    <td>{{ event.title }}</td>
+                    <td>{{ event.date|date:"M d, Y" }}</td>
+                    <td>${{ event.total_revenue|floatformat:2 }}</td>
+                    <td>{{ event.participant_management.count }}</td>
+                    <td>
+                        <a href="{% url 'event_details' event.title %}" class="btn btn-sm">View Details</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5">No revenue data available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %} 

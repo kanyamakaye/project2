@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --primary-light: #818cf8;
+            --secondary: #0ea5e9;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --radius: 0.5rem;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.2s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--gray-50);
+            color: var(--gray-800);
+            line-height: 1.5;
+            padding-bottom: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .add-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: white;
+            color: var(--primary);
+            font-weight: 500;
+            padding: 0.625rem 1.25rem;
+            border-radius: var(--radius);
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .add-button:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .filter-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+        }
+
+        .filter-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .filter-input::placeholder {
+            color: var(--gray-400);
+        }
+
+        /* Date range filter styles */
+        .date-range-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            width: 100%;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .date-filter-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray-700);
+            font-weight: 500;
+            font-size: 0.875rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .date-filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .date-filter-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            font-size: 0.875rem;
+        }
+
+        .date-filter-button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .date-filter-reset {
+            background-color: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .date-filter-reset:hover {
+            background-color: var(--gray-200);
+        }
+
+        .date-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: var(--radius);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th {
+            background-color: var(--gray-100);
+            color: var(--gray-700);
+            font-weight: 600;
+            text-align: left;
+            padding: 0.875rem 1.25rem;
+            border-bottom: 2px solid var(--gray-200);
+            position: relative;
+        }
+
+        th:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 25%;
+            height: 50%;
+            width: 1px;
+            background-color: var(--gray-300);
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--gray-200);
+            color: var(--gray-700);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background-color: var(--gray-50);
+        }
+
+        .event-cell {
+            font-weight: 500;
+            color: var(--gray-800);
+        }
+
+        .time-cell {
+            color: var(--gray-600);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .topic-cell {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .speaker-cell {
+            font-weight: 500;
+        }
+
+        .speaker-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .speaker-assigned {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .no-speaker {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            font-style: italic;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .pagination-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 2.5rem;
+            height: 2.5rem;
+            padding: 0 0.75rem;
+            border-radius: var(--radius);
+            background-color: white;
+            color: var(--gray-700);
+            font-weight: 500;
+            text-decoration: none;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-200);
+        }
+
+        .pagination-link:hover {
+            background-color: var(--gray-50);
+            color: var(--primary);
+        }
+
+        .pagination-current {
+            background-color: var(--primary);
+            color: white;
+            border: 1px solid var(--primary);
+        }
+
+        .pagination-current:hover {
+            background-color: var(--primary-dark);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1.5rem;
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--gray-300);
+        }
+
+        .empty-state-text {
+            font-size: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Active filter badge */
+        .active-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .filter-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0.75rem;
+            background-color: var(--primary-light);
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .filter-badge-close {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 0.3);
+            transition: var(--transition);
+        }
+
+        .filter-badge-close:hover {
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Analytics section */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .analytics-card {
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .analytics-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .analytics-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .analytics-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .analytics-body {
+            padding: 1.5rem;
+            height: 300px;
+            position: relative;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .analytics-summary {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .summary-label {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid var(--gray-200);
+            margin-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.75rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-600);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab:hover:not(.active) {
+            color: var(--gray-800);
+            border-bottom-color: var(--gray-300);
+        }
+
+        .legend-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--gray-700);
+        }
+
+        .legend-color {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .filter-group, .date-filter-group {
+                min-width: 100%;
+            }
+
+            .date-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            th, td {
+                padding: 0.75rem 1rem;
+            }
+
+            .topic-cell {
+                max-width: 150px;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation for table rows */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(0.5rem); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        tbody tr {
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
+        }
+
+        tbody tr:nth-child(1) { animation-delay: 0.05s; }
+        tbody tr:nth-child(2) { animation-delay: 0.1s; }
+        tbody tr:nth-child(3) { animation-delay: 0.15s; }
+        tbody tr:nth-child(4) { animation-delay: 0.2s; }
+        tbody tr:nth-child(5) { animation-delay: 0.25s; }
+        tbody tr:nth-child(6) { animation-delay: 0.3s; }
+        tbody tr:nth-child(7) { animation-delay: 0.35s; }
+        tbody tr:nth-child(8) { animation-delay: 0.4s; }
+        tbody tr:nth-child(9) { animation-delay: 0.45s; }
+        tbody tr:nth-child(10) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1>Schedule Management</h1>
+                <a href="" class="add-button">
+                    <i class="fas fa-plus"></i> Add New Schedule
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Analytics Section -->
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <div class="analytics-header">
+                    <h3 class="analytics-title">
+                        <i class="fas fa-chart-bar" style="color: var(--primary);"></i>
+                        Events by Day
+                    </h3>
+                    <div class="tab-container">
+                        <div class="tab active" onclick="switchTimeframe('day')">Day</div>
+                        <div class="tab" onclick="switchTimeframe('week')">Week</div>
+                        <div class="tab" onclick="switchTimeframe('month')">Month</div>
+                    </div>
+                </div>
+                <div class="analytics-body">
+                    <div class="chart-container">
+                        <canvas id="eventsChart"></canvas>
+                    </div>
+                    <div class="analytics-summary">
+                        <div class="summary-item">
+                            <div class="summary-value" id="totalEvents">0</div>
+                            <div class="summary-label">Total Events</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="avgEventsPerDay">0</div>
+                            <div class="summary-label">Avg. Per Day</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="summary-value" id="peakDay">-</div>
+                            <div class="summary-label">Peak Day</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="analytics-card">
+                <div class="analytics-header">
+                    <h3 class="analytics-title">
+                        <i class="fas fa-chart-pie" style="color: var(--accent);"></i>
+                        Events by Speaker
+                    </h3>
+                </div>
+                <div class="analytics-body">
+                    <div class="chart-container">
+                        <canvas id="speakersChart"></canvas>
+                    </div>
+                    <div class="legend-container" id="speakersLegend">
+                        <!-- Legend items will be added dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Event Schedule</h2>
+            </div>
+            <div class="card-body">
+                <div class="filter-container">
+                    <div class="filter-group">
+                        <i class="fas fa-calendar-alt filter-icon"></i>
+                        <input type="text" id="eventFilter" class="filter-input" placeholder="Filter by Event" onkeyup="filterTable()">
+                    </div>
+                    <div class="filter-group">
+                        <i class="fas fa-bookmark filter-icon"></i>
+                        <input type="text" id="topicFilter" class="filter-input" placeholder="Filter by Topic" onkeyup="filterTable()">
+                    </div>
+                    <div class="filter-group">
+                        <i class="fas fa-user filter-icon"></i>
+                        <input type="text" id="speakerFilter" class="filter-input" placeholder="Filter by Speaker" onkeyup="filterTable()">
+                    </div>
+                    
+                    <div class="date-range-container">
+                        <div class="date-filter-group">
+                            <div class="date-filter-label">
+                                <i class="fas fa-calendar-day"></i> Start Date
+                            </div>
+                            <input type="date" id="startDateFilter" class="filter-input" onchange="updateDateBadge()">
+                        </div>
+                        <div class="date-filter-group">
+                            <div class="date-filter-label">
+                                <i class="fas fa-calendar-day"></i> End Date
+                            </div>
+                            <input type="date" id="endDateFilter" class="filter-input" onchange="updateDateBadge()">
+                        </div>
+                        <div class="date-actions">
+                            <button id="applyDateFilter" class="date-filter-button" onclick="filterTable()">
+                                <i class="fas fa-filter"></i> Apply Filter
+                            </button>
+                            <button id="resetDateFilter" class="date-filter-button date-filter-reset" onclick="resetDateFilter()">
+                                <i class="fas fa-times"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="activeFilters" class="active-filters"></div>
+                </div>
+
+                <div class="table-container">
+                    <table id="scheduleTable">
+                        <thead>
+                            <tr>
+                                <th>Event</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Topic</th>
+                                <th>Speaker</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for schedule in schedules %}
+                            <tr data-start-date="{{ schedule.start_time|date:'Y-m-d' }}" data-event="{{ schedule.event }}" data-speaker="{{ schedule.speaker|default:'Unassigned' }}">
+                                <td class="event-cell">{{ schedule.event }}</td>
+                                <td class="time-cell">{{ schedule.start_time }}</td>
+                                <td class="time-cell">{{ schedule.end_time }}</td>
+                                <td class="topic-cell" title="{{ schedule.topic }}">{{ schedule.topic }}</td>
+                                <td>
+                                    {% if schedule.speaker %}
+                                        <span class="speaker-badge speaker-assigned">
+                                            <i class="fas fa-user-check" style="margin-right: 0.25rem;"></i>
+                                            {{ schedule.speaker }}
+                                        </span>
+                                    {% else %}
+                                        <span class="speaker-badge no-speaker">
+                                            <i class="fas fa-user-slash" style="margin-right: 0.25rem;"></i>
+                                            No speaker assigned
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <div class="empty-state-icon">
+                                            <i class="fas fa-calendar-xmark"></i>
+                                        </div>
+                                        <p class="empty-state-text">No schedules found</p>
+                                        <a href="/schedule/forms" class="add-button">
+                                            <i class="fas fa-plus"></i> Add Your First Schedule
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="pagination">
+            {% if schedules.has_previous %}
+                <a href="?page=1" class="pagination-link" title="First Page">
+                    <i class="fas fa-angles-left"></i>
+                </a>
+                <a href="?page={{ schedules.previous_page_number }}" class="pagination-link" title="Previous Page">
+                    <i class="fas fa-angle-left"></i>
+                </a>
+            {% endif %}
+
+            <span class="pagination-link pagination-current">
+                {{ schedules.number }} / {{ schedules.paginator.num_pages }}
+            </span>
+
+            {% if schedules.has_next %}
+                <a href="?page={{ schedules.next_page_number }}" class="pagination-link" title="Next Page">
+                    <i class="fas fa-angle-right"></i>
+                </a>
+                <a href="?page={{ schedules.paginator.num_pages }}" class="pagination-link" title="Last Page">
+                    <i class="fas fa-angles-right"></i>
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Parse date string in format YYYY-MM-DD
+        function parseDate(dateString) {
+            if (!dateString) return null;
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return null;
+            return new Date(parts[0], parts[1] - 1, parts[2]); // Month is 0-indexed in JS
+        }
+
+        // Format date as YYYY-MM-DD
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Format date for display (e.g., "Jan 15")
+        function formatDateForDisplay(date) {
+            const options = { month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Extract date from a datetime string
+        function extractDateFromDateTime(dateTimeString) {
+            if (!dateTimeString) return null;
+            // Try to extract date part (assumes format contains YYYY-MM-DD somewhere)
+            const dateMatch = dateTimeString.match(/\d{4}-\d{2}-\d{2}/);
+            return dateMatch ? dateMatch[0] : null;
+        }
+
+        // Update the active date filter badge
+        function updateDateBadge() {
+            const startDate = document.getElementById('startDateFilter').value;
+            const endDate = document.getElementById('endDateFilter').value;
+            const activeFilters = document.getElementById('activeFilters');
+            
+            // Remove existing date filter badge
+            const existingBadge = document.getElementById('dateBadge');
+            if (existingBadge) {
+                existingBadge.remove();
+            }
+            
+            // Add new badge if dates are selected
+            if (startDate || endDate) {
+                const badge = document.createElement('div');
+                badge.id = 'dateBadge';
+                badge.className = 'filter-badge';
+                
+                let badgeText = '<i class="fas fa-calendar-day"></i> Date: ';
+                if (startDate && endDate) {
+                    badgeText += `${startDate} to ${endDate}`;
+                } else if (startDate) {
+                    badgeText += `From ${startDate}`;
+                } else if (endDate) {
+                    badgeText += `Until ${endDate}`;
+                }
+                
+                badge.innerHTML = `${badgeText} <span class="filter-badge-close" onclick="resetDateFilter()"><i class="fas fa-times"></i></span>`;
+                activeFilters.appendChild(badge);
+            }
+        }
+
+        // Reset date filters
+        function resetDateFilter() {
+            document.getElementById('startDateFilter').value = '';
+            document.getElementById('endDateFilter').value = '';
+            
+            // Remove date badge
+            const existingBadge = document.getElementById('dateBadge');
+            if (existingBadge) {
+                existingBadge.remove();
+            }
+            
+            // Re-filter table
+            filterTable();
+            
+            // Update charts
+            updateCharts();
+        }
+
+        function filterTable() {
+            const eventFilter = document.getElementById('eventFilter').value.toUpperCase();
+            const topicFilter = document.getElementById('topicFilter').value.toUpperCase();
+            const speakerFilter = document.getElementById('speakerFilter').value.toUpperCase();
+            const startDateFilter = document.getElementById('startDateFilter').value;
+            const endDateFilter = document.getElementById('endDateFilter').value;
+            
+            const startDate = startDateFilter ? parseDate(startDateFilter) : null;
+            const endDate = endDateFilter ? parseDate(endDateFilter) : null;
+            
+            // If end date is provided, set it to end of day for inclusive filtering
+            if (endDate) {
+                endDate.setHours(23, 59, 59, 999);
+            }
+            
+            const table = document.getElementById('scheduleTable');
+            const tr = table.getElementsByTagName('tr');
+            let visibleRows = 0;
+
+            for (let i = 1; i < tr.length; i++) {
+                // Skip the empty state row if it exists
+                if (tr[i].cells.length === 1 && tr[i].cells[0].colSpan === 5) {
+                    continue;
+                }
+
+                const eventTd = tr[i].getElementsByTagName('td')[0];
+                const startTimeTd = tr[i].getElementsByTagName('td')[1];
+                const topicTd = tr[i].getElementsByTagName('td')[3];
+                const speakerTd = tr[i].getElementsByTagName('td')[4];
+                
+                if (eventTd && startTimeTd && topicTd && speakerTd) {
+                    const eventText = eventTd.textContent || eventTd.innerText;
+                    const startTimeText = startTimeTd.textContent || startTimeTd.innerText;
+                    const topicText = topicTd.textContent || topicTd.innerText;
+                    const speakerText = speakerTd.textContent || speakerTd.innerText;
+
+                    // Get the date from the row's data attribute or extract from start time
+                    let rowDateStr = tr[i].dataset.startDate || extractDateFromDateTime(startTimeText);
+                    const rowDate = parseDate(rowDateStr);
+
+                    const eventMatch = eventText.toUpperCase().indexOf(eventFilter) > -1;
+                    const topicMatch = topicText.toUpperCase().indexOf(topicFilter) > -1;
+                    const speakerMatch = speakerText.toUpperCase().indexOf(speakerFilter) > -1;
+                    
+                    // Date range filtering
+                    let dateMatch = true;
+                    if (rowDate && (startDate || endDate)) {
+                        if (startDate && endDate) {
+                            dateMatch = rowDate >= startDate && rowDate <= endDate;
+                        } else if (startDate) {
+                            dateMatch = rowDate >= startDate;
+                        } else if (endDate) {
+                            dateMatch = rowDate <= endDate;
+                        }
+                    }
+
+                    if (eventMatch && topicMatch && speakerMatch && dateMatch) {
+                        tr[i].style.display = '';
+                        visibleRows++;
+                    } else {
+                        tr[i].style.display = 'none';
+                    }
+                }
+            }
+
+            // Show empty state if no matching results
+            const emptyStateRow = document.querySelector('.empty-state')?.closest('tr');
+            if (emptyStateRow) {
+                if (visibleRows === 0 && tr.length > 1) {
+                    emptyStateRow.style.display = '';
+                    document.querySelector('.empty-state-text').textContent = 'No matching schedules found';
+                } else {
+                    emptyStateRow.style.display = 'none';
+                }
+            }
+            
+            // Update charts based on filtered data
+            updateCharts();
+        }
+
+        // Set today as the default start date
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const formattedToday = formatDate(today);
+            
+            // Uncomment to set today as default start date
+            // document.getElementById('startDateFilter').value = formattedToday;
+            // updateDateBadge();
+            
+            // Initialize charts
+            initCharts();
+        });
+        
+        // Chart variables
+        let eventsChart = null;
+        let speakersChart = null;
+        let currentTimeframe = 'day';
+        
+        // Initialize charts
+        function initCharts() {
+            // Set up charts with initial data
+            setupEventsChart();
+            setupSpeakersChart();
+            
+            // Update summary statistics
+            updateSummaryStats();
+        }
+        
+        // Set up events by day chart
+        function setupEventsChart() {
+            const ctx = document.getElementById('eventsChart').getContext('2d');
+            
+            // Get data for chart
+            const { labels, data } = getEventsChartData();
+            
+            // Create gradient for bar chart
+            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+            gradient.addColorStop(0, 'rgba(79, 70, 229, 0.8)');
+            gradient.addColorStop(1, 'rgba(79, 70, 229, 0.2)');
+            
+            // Create chart
+            eventsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Number of Events',
+                        data: data,
+                        backgroundColor: gradient,
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barThickness: 'flex',
+                        maxBarThickness: 35
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#1f2937',
+                            bodyColor: '#4b5563',
+                            borderColor: '#e5e7eb',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6,
+                            usePointStyle: true,
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    return tooltipItems[0].label;
+                                },
+                                label: function(context) {
+                                    const value = context.raw;
+                                    return `${value} event${value !== 1 ? 's' : ''}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#6b7280'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#e5e7eb'
+                            },
+                            ticks: {
+                                precision: 0,
+                                color: '#6b7280'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Set up speakers chart
+        function setupSpeakersChart() {
+            const ctx = document.getElementById('speakersChart').getContext('2d');
+            
+            // Get data for chart
+            const { labels, data, colors } = getSpeakersChartData();
+            
+            // Create chart
+            speakersChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderColor: 'white',
+                        borderWidth: 2,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#1f2937',
+                            bodyColor: '#4b5563',
+                            borderColor: '#e5e7eb',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${context.label}: ${value} event${value !== 1 ? 's' : ''} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Create legend
+            createSpeakersLegend(labels, colors);
+        }
+        
+        // Create custom legend for speakers chart
+        function createSpeakersLegend(labels, colors) {
+            const legendContainer = document.getElementById('speakersLegend');
+            legendContainer.innerHTML = '';
+            
+            labels.forEach((label, index) => {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item';
+                
+                const colorBox = document.createElement('div');
+                colorBox.className = 'legend-color';
+                colorBox.style.backgroundColor = colors[index];
+                
+                const labelText = document.createElement('span');
+                labelText.textContent = label;
+                
+                legendItem.appendChild(colorBox);
+                legendItem.appendChild(labelText);
+                legendContainer.appendChild(legendItem);
+            });
+        }
+        
+        // Get data for events chart based on current timeframe
+        function getEventsChartData() {
+            const table = document.getElementById('scheduleTable');
+            const rows = Array.from(table.querySelectorAll('tbody tr')).filter(row => {
+                return row.style.display !== 'none' && row.cells.length > 1;
+            });
+            
+            // Get date range for chart
+            let startDate, endDate;
+            const startDateFilter = document.getElementById('startDateFilter').value;
+            const endDateFilter = document.getElementById('endDateFilter').value;
+            
+            if (startDateFilter) {
+                startDate = parseDate(startDateFilter);
+            } else {
+                // Default to 7 days ago if no start date
+                startDate = new Date();
+                startDate.setDate(startDate.getDate() - 7);
+            }
+            
+            if (endDateFilter) {
+                endDate = parseDate(endDateFilter);
+            } else {
+                // Default to 7 days from now if no end date
+                endDate = new Date();
+                endDate.setDate(endDate.getDate() + 7);
+            }
+            
+            // Create date range based on timeframe
+            const dates = [];
+            const currentDate = new Date(startDate);
+            
+            while (currentDate <= endDate) {
+                dates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            // Count events per date
+            const eventCounts = {};
+            
+            dates.forEach(date => {
+                const dateStr = formatDate(date);
+                eventCounts[dateStr] = 0;
+            });
+            
+            rows.forEach(row => {
+                const dateStr = row.dataset.startDate || extractDateFromDateTime(row.cells[1].textContent);
+                if (dateStr && eventCounts.hasOwnProperty(dateStr)) {
+                    eventCounts[dateStr]++;
+                }
+            });
+            
+            // Format labels based on timeframe
+            const labels = dates.map(date => formatDateForDisplay(date));
+            const data = Object.values(eventCounts);
+            
+            return { labels, data };
+        }
+        
+        // Get data for speakers chart
+        function getSpeakersChartData() {
+            const table = document.getElementById('scheduleTable');
+            const rows = Array.from(table.querySelectorAll('tbody tr')).filter(row => {
+                return row.style.display !== 'none' && row.cells.length > 1;
+            });
+            
+            // Count events per speaker
+            const speakerCounts = {};
+            
+            rows.forEach(row => {
+                const speaker = row.dataset.speaker || 'Unassigned';
+                if (!speakerCounts[speaker]) {
+                    speakerCounts[speaker] = 0;
+                }
+                speakerCounts[speaker]++;
+            });
+            
+            // Sort speakers by count (descending)
+            const sortedSpeakers = Object.entries(speakerCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5); // Show top 5 speakers
+            
+            // If there are more than 5 speakers, group the rest as "Others"
+            if (Object.keys(speakerCounts).length > 5) {
+                const otherCount = Object.entries(speakerCounts)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(5)
+                    .reduce((sum, [_, count]) => sum + count, 0);
+                
+                if (otherCount > 0) {
+                    sortedSpeakers.push(['Others', otherCount]);
+                }
+            }
+            
+            const labels = sortedSpeakers.map(([speaker, _]) => speaker);
+            const data = sortedSpeakers.map(([_, count]) => count);
+            
+            // Generate colors for each speaker
+            const colors = [
+                'rgba(79, 70, 229, 0.8)',  // Primary
+                'rgba(139, 92, 246, 0.8)', // Accent
+                'rgba(14, 165, 233, 0.8)', // Secondary
+                'rgba(16, 185, 129, 0.8)', // Success
+                'rgba(245, 158, 11, 0.8)', // Warning
+                'rgba(107, 114, 128, 0.8)' // Gray (for Others)
+            ];
+            
+            return { labels, data, colors };
+        }
+        
+        // Update charts based on filtered data
+        function updateCharts() {
+            if (eventsChart) {
+                const { labels, data } = getEventsChartData();
+                eventsChart.data.labels = labels;
+                eventsChart.data.datasets[0].data = data;
+                eventsChart.update();
+            }
+            
+            if (speakersChart) {
+                const { labels, data, colors } = getSpeakersChartData();
+                speakersChart.data.labels = labels;
+                speakersChart.data.datasets[0].data = data;
+                speakersChart.data.datasets[0].backgroundColor = colors;
+                speakersChart.update();
+                
+                // Update legend
+                createSpeakersLegend(labels, colors);
+            }
+            
+            // Update summary statistics
+            updateSummaryStats();
+        }
+        
+        // Switch timeframe for events chart
+        function switchTimeframe(timeframe) {
+            currentTimeframe = timeframe;
+            
+            // Update active tab
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update chart
+            updateCharts();
+        }
+        
+        // Update summary statistics
+        function updateSummaryStats() {
+            const { data } = getEventsChartData();
+            
+            // Calculate total events
+            const totalEvents = data.reduce((sum, count) => sum + count, 0);
+            document.getElementById('totalEvents').textContent = totalEvents;
+            
+            // Calculate average events per day
+            const avgEvents = data.length > 0 ? (totalEvents / data.length).toFixed(1) : '0';
+            document.getElementById('avgEventsPerDay').textContent = avgEvents;
+            
+            // Find peak day
+            if (data.length > 0) {
+                const maxEvents = Math.max(...data);
+                const maxIndex = data.indexOf(maxEvents);
+                const { labels } = getEventsChartData();
+                const peakDay = maxEvents > 0 ? labels[maxIndex] : '-';
+                document.getElementById('peakDay').textContent = peakDay;
+            } else {
+                document.getElementById('peakDay').textContent = '-';
+            }
+        }
+    </script>
+</body>
+</html>

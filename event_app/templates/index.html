@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Event Management System</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <style>
+        /**
+         * Table of Contents:
+         * 1. Base Styles
+         * 2. Layout
+         * 3. Sidebar
+         * 4. Main Content
+         * 5. Cards
+         * 6. Charts
+         * 7. Tables
+         * 8. Badges
+         * 9. Buttons
+         * 10. Filters
+         * 11. Footer
+         * 12. Responsive Styles
+         * 13. Animations
+         * 14. Modern UI Elements
+         */
+
+        /* 1. Base Styles */
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #2c3e50;
+            --secondary-dark: #1a252f;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --danger-color: #e74c3c;
+            --light-color: #f5f7fa;
+            --dark-color: #333;
+            --text-color: #4a5568;
+            --border-color: #e9ecef;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --transition: all 0.3s ease;
+            --border-radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--text-color);
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 2. Layout */
+        .dashboard-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 100vh;
+        }
+
+        /* 3. Sidebar */
+        .sidebar {
+            width: 280px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0;
+            transition: var(--transition);
+            flex-shrink: 0;
+            overflow-y: auto;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sidebar h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-section {
+            margin-top: 10px;
+        }
+
+        .sidebar-section-title {
+            padding: 10px 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .sidebar li a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .sidebar li a:hover {
+            background-color: #34495e;
+        }
+
+        .sidebar li a.active {
+            background-color: var(--primary-color);
+            font-weight: 500;
+            border-left: 4px solid white;
+        }
+
+        .sidebar li a svg {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .sidebar-submenu {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding-left: 15px;
+        }
+
+        .sidebar-submenu a {
+            padding: 8px 20px 8px 35px !important;
+            font-size: 0.9rem;
+        }
+
+        /* 4. Main Content */
+        .main-content {
+            flex: 1;
+            padding: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-content-inner {
+            padding: 30px;
+            flex: 1;
+        }
+
+        .main-content h1 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            color: var(--secondary-color);
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        /* Welcome Header */
+        .welcome-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .welcome-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            z-index: 1;
+        }
+
+        .welcome-header h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            color: white;
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-header p {
+            margin-top: 10px;
+            font-size: 1.1rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 5. Cards */
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            border-top: 4px solid var(--primary-color);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card:nth-child(2) {
+            border-top-color: var(--success-color);
+        }
+
+        .card:nth-child(3) {
+            border-top-color: var(--warning-color);
+        }
+
+        .card:nth-child(4) {
+            border-top-color: var(--danger-color);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-content {
+            margin-top: 8px;
+        }
+
+        .card-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .loading-placeholder {
+            height: 36px;
+            width: 100px;
+            background-color: #eee;
+            border-radius: 4px;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* 6. Charts */
+        .charts-section {
+            margin-bottom: 30px;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .chart h3 {
+            margin: 0;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .chart-content {
+            height: 300px;
+            position: relative;
+        }
+
+        .chart-loading {
+            height: 100%;
+            width: 100%;
+            background-color: #eee;
+            border-radius: 4px;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* 7. Tables */
+        .tables-section {
+            margin-bottom: 30px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background-color: #f8f9fa;
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #7f8c8d;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* 8. Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: #e3fcef;
+            color: #0d8a53;
+        }
+
+        .badge-warning {
+            background-color: #fff8e6;
+            color: #b7791f;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .badge-info {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        /* 9. Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.875rem;
+        }
+
+        .btn svg {
+            margin-right: 6px;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* 10. Filters */
+        .filters-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-label {
+            margin-right: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: white;
+        }
+
+        /* Date Range Picker */
+        .date-range {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .date-input {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: white;
+        }
+
+        /* 11. Footer */
+        .footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            padding: 40px 30px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--primary-color);
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .footer-links a svg {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+        }
+
+        .footer-contact p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-contact svg {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .footer-bottom {
+            background-color: var(--secondary-dark);
+            padding: 15px 30px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+        }
+
+        /* 12. Responsive Styles */
+        @media (max-width: 1024px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                max-height: 60px;
+                overflow: hidden;
+                position: static;
+            }
+
+            .sidebar.expanded {
+                max-height: 100vh;
+            }
+
+            .toggle-sidebar {
+                display: block;
+                background: none;
+                border: none;
+                color: white;
+                cursor: pointer;
+            }
+
+            .main-content-inner {
+                padding: 20px;
+            }
+
+            .welcome-header {
+                padding: 20px;
+            }
+
+            .welcome-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .cards-container {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* 13. Animations */
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        /* 14. Modern UI Elements */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title svg {
+            margin-right: 10px;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .action-btn svg {
+            margin-right: 8px;
+        }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>Event Management</h2>
+                <button class="toggle-sidebar" id="toggle-sidebar" style="display: none;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            
+            <nav>
+                <ul>
+                    <!-- Dashboard -->
+                    <li>
+                        <a href="/" class="active">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+
+                    <!-- Category Management -->
+                    <li>
+                        <a href="/categories/">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="3" y1="9" x2="21" y2="9"></line>
+                                <line x1="9" y1="21" x2="9" y2="9"></line>
+                            </svg>
+                            Category Management
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="/categories/">View Categories</a></li>
+                            <li><a href="/cat/form">Add Category</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Speaker Management -->
+                    <li>
+                        <a href="/speakers/">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="22"></line>
+                            </svg>
+                            Speaker Management
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="/speakers/">View Speakers</a></li>
+                            <li><a href="/speaker-form/">Add Speaker</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Participant Management -->
+                    <li>
+                        <a href="/participants/">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            Participant Management
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="/participants/">All Participants</a></li>
+                            <li><a href="/participant-form/">Add Participant</a></li>
+                            <li><a href="#">By Categories</a></li>
+                            <li><a href="/participants/with-payments/">With Payments</a></li>
+                            <li><a href="/participants/top-paying/">Top Paying</a></li>
+                            <li><a href="/participants/recent/">Recently Registered</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Analytics Management -->
+                    <li>
+                        <a href="/analytics/">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="20" x2="18" y2="10"></line>
+                                <line x1="12" y1="20" x2="12" y2="4"></line>
+                                <line x1="6" y1="20" x2="6" y2="14"></line>
+                            </svg>
+                            Analytics
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="/analytics/average-price/">Average Price</a></li>
+                            <li><a href="#">Participant Stats</a></li>
+                            <li><a href="#">Event Stats</a></li>
+                            
+                            <li><a href="#">Highest Paid</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Schedule Management -->
+                    <li>
+                        <a href="/make_schedule/">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            Schedule Management
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="/make_schedule/">View Schedule</a></li>
+                            <li><a href="/schedule/forms/">Create Schedule</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Event Management -->
+                    <li>
+                        <a href="/events/">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path>
+                                <path d="m15 5 4 4"></path>
+                            </svg>
+                            Event Management
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="/events/">All Events</a></li>
+                            <li><a href="/event-count/">Total Event</a></li>
+                            <li><a href="/event-form/">Add Event</a></li>
+                            <li><a href="/events/">Free Events</a></li>
+                            <li><a href="/events/">Paid Events</a></li>
+                        </ul>
+                    </li>
+
+                    <!-- Payment Management -->
+                    <li>
+                        <a href="/payments/">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                                <line x1="2" y1="10" x2="22" y2="10"></line>
+                            </svg>
+                            Payment Management
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="/payment/">Add Payment</a></li>
+                             <li><a href="/payments/">View Payments</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Content Wrapper -->
+        <div class="content-wrapper">
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- Welcome Header -->
+                <div class="welcome-header">
+                    <h1>Welcome To Online Event Management System</h1>
+                    <p>Manage your events, participants, and payments all in one place</p>
+                </div>
+                
+                <div class="main-content-inner">
+                    <h1>Dashboard Overview</h1>
+                    
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <button class="action-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 12H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1Z"></path>
+                                <path d="M22 12h-8a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1Z"></path>
+                                <path d="M11 2H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Z"></path>
+                                <path d="M15 6h6"></path>
+                                <path d="M18 3v6"></path>
+                            </svg>
+                            Create Event
+                        </button>
+                        <button class="action-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            Add Participant
+                        </button>
+                        <button class="action-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                                <line x1="2" y1="10" x2="22" y2="10"></line>
+                            </svg>
+                            Record Payment
+                        </button>
+                        <button class="action-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Export Data
+                        </button>
+                    </div>
+                    
+                    <!-- Date Range Filter -->
+                    <section class="filters-section">
+                        <div class="section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                            </svg>
+                            Filter Dashboard Data
+                        </div>
+                        <div class="date-range">
+                            <div class="filter-item">
+                                <label class="filter-label" for="start-date">Start Date:</label>
+                                <input type="date" id="start-date" class="date-input">
+                            </div>
+                            <div class="filter-item">
+                                <label class="filter-label" for="end-date">End Date:</label>
+                                <input type="date" id="end-date" class="date-input">
+                            </div>
+                            <button id="apply-date-filter" class="btn btn-primary btn-sm">Apply Filter</button>
+                            <button id="reset-date-filter" class="btn btn-secondary btn-sm">Reset</button>
+                        </div>
+                    </section>
+                    
+                    <!-- Dashboard Summary Cards -->
+                    <section class="summary-section">
+                        <div class="section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 3v18h18"></path>
+                                <path d="m19 9-5 5-4-4-3 3"></path>
+                            </svg>
+                            Key Metrics
+                        </div>
+                        <div class="cards-container">
+                            <!-- Total Events Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Total Events</h3>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                </div>
+                                <div class="card-content">
+                                    <div id="total-events-value" class="loading-placeholder"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Total Participants Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Total Participants</h3>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    </svg>
+                                </div>
+                                <div class="card-content">
+                                    <div id="total-participants-value" class="loading-placeholder"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Total Revenue Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Total Revenue</h3>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                                    </svg>
+                                </div>
+                                <div class="card-content">
+                                    <div id="total-revenue-value" class="loading-placeholder"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Total Speakers Card -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3>Total Speakers</h3>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon">
+                                        <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                        <line x1="12" y1="19" x2="12" y2="22"></line>
+                                    </svg>
+                                </div>
+                                <div class="card-content">
+                                    <div id="total-speakers-value" class="loading-placeholder"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Dashboard Charts -->
+                    <section class="charts-section">
+                        <div class="section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 3v18h18"></path>
+                                <path d="M18 12h1"></path>
+                                <path d="M11 12h1"></path>
+                                <path d="M4 12h1"></path>
+                                <path d="M18 5v1"></path>
+                                <path d="M18 19v1"></path>
+                                <circle cx="18" cy="12" r="3"></circle>
+                                <circle cx="11" cy="12" r="3"></circle>
+                                <circle cx="4" cy="12" r="3"></circle>
+                            </svg>
+                            Data Visualization
+                        </div>
+                        <!-- First Row -->
+                        <div class="charts-container">
+                            <!-- Revenue by Category Chart -->
+                            <div class="chart">
+                                <h3>Revenue by Event Category</h3>
+                                <div class="chart-content">
+                                    <div id="category-revenue-chart" class="chart-loading"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Event Distribution Chart -->
+                            <div class="chart">
+                                <h3>Event Distribution by Category</h3>
+                                <div class="chart-content">
+                                    <div id="category-distribution-chart" class="chart-loading"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Second Row -->
+                        <div class="charts-container">
+                            <!-- Revenue Trends Chart -->
+                            <div class="chart">
+                                <h3>Monthly Revenue Trends</h3>
+                                <div class="chart-content">
+                                    <div id="revenue-trend-chart" class="chart-loading"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Payment Methods Chart -->
+                            <div class="chart">
+                                <h3>Payment Methods Distribution</h3>
+                                <div class="chart-content">
+                                    <div id="payment-methods-chart" class="chart-loading"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Data Tables Section -->
+                    <section class="tables-section">
+                        <div class="section-title">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M8 3H5a2 2 0 0 0-2 2v3"></path>
+                                <path d="M21 8V5a2 2 0 0 0-2-2h-3"></path>
+                                <path d="M3 16v3a2 2 0 0 0 2 2h3"></path>
+                                <path d="M16 21h3a2 2 0 0 0 2-2v-3"></path>
+                                <line x1="12" y1="8" x2="12" y2="16"></line>
+                                <line x1="8" y1="12" x2="16" y2="12"></line>
+                            </svg>
+                            Recent Activity
+                        </div>
+                        <!-- Upcoming Events Table -->
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3 class="table-title">Upcoming Events</h3>
+                                <a href="/events/" class="btn btn-primary btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                    View All
+                                </a>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Event Title</th>
+                                        <th>Category</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Location</th>
+                                        <th>Price</th>
+                                        <th>Available Tickets</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="upcoming-events-table">
+                                    <tr>
+                                        <td colspan="7" class="loading-placeholder" style="height: 20px; margin: 10px 0;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7" class="loading-placeholder" style="height: 20px; margin: 10px 0;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="7" class="loading-placeholder" style="height: 20px; margin: 10px 0;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Recent Payments Table -->
+                        <div class="table-container">
+                            <div class="table-header">
+                                <h3 class="table-title">Recent Payments</h3>
+                                <a href="/payments/" class="btn btn-primary btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="12" y1="8" x2="12" y2="16"></line>
+                                        <line x1="8" y1="12" x2="16" y2="12"></line>
+                                    </svg>
+                                    View All
+                                </a>
+                            </div>
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Participant</th>
+                                        <th>Event</th>
+                                        <th>Amount</th>
+                                        <th>Payment Method</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-payments-table">
+                                    <tr>
+                                        <td colspan="6" class="loading-placeholder" style="height: 20px; margin: 10px 0;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="loading-placeholder" style="height: 20px; margin: 10px 0;"></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="6" class="loading-placeholder" style="height: 20px; margin: 10px 0;"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Footer -->
+                <footer class="footer">
+                    <div class="footer-content">
+                        <div class="footer-column">
+                            <h3>Quick Links</h3>
+                            <ul class="footer-links">
+                                <li>
+                                    <a href="/">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                        Dashboard
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/events/">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                        Events
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/participants/">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                        Participants
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/analytics/">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                        Analytics
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h3>Resources</h3>
+                            <ul class="footer-links">
+                                <li>
+                                    <a href="/help">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                        Help Center
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/documentation">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                        Documentation
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/api">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                        API Reference
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/tutorials">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <polyline points="9 18 15 12 9 6"></polyline>
+                                        </svg>
+                                        Tutorials
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h3>Contact Us</h3>
+                            <div class="footer-contact">
+                                <p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                                    </svg>
+                                    +250 781093413
+                                </p>
+                                <p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                        <polyline points="22,6 12,13 2,6"></polyline>
+                                    </svg>
+                                    support@eventmanagement.com
+                                </p>
+                                <p>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    123 Event Street, Suite 456<br>Kigali City, CA 94107
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-bottom">
+                        <p>&copy; 2025 Online Event Management System. All rights reserved.</p>
+                    </div>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <div class="scroll-to-top" id="scroll-to-top">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Application Scripts -->
+    <script>
+        // 1. Initialization
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSidebar();
+            initializeDateFilters();
+            fetchDashboardData();
+            initializeScrollToTop();
+        });
+
+        // 2. Sidebar Functionality
+        function initializeSidebar() {
+            const toggleSidebar = document.getElementById('toggle-sidebar');
+            const sidebar = document.getElementById('sidebar');
+            
+            // Show toggle button on mobile
+            if (window.innerWidth <= 768) {
+                toggleSidebar.style.display = 'block';
+            }
+            
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth <= 768) {
+                    toggleSidebar.style.display = 'block';
+                } else {
+                    toggleSidebar.style.display = 'none';
+                    sidebar.classList.remove('expanded');
+                }
+            });
+            
+            // Toggle sidebar on mobile
+            toggleSidebar.addEventListener('click', function() {
+                sidebar.classList.toggle('expanded');
+            });
+
+            // Toggle submenu visibility
+            const menuItems = document.querySelectorAll('.sidebar > nav > ul > li > a');
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    const submenu = this.nextElementSibling;
+                    if (submenu && submenu.classList.contains('sidebar-submenu')) {
+                        e.preventDefault();
+                        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+                    }
+                });
+            });
+
+            // Initialize submenus as hidden
+            const submenus = document.querySelectorAll('.sidebar-submenu');
+            submenus.forEach(submenu => {
+                submenu.style.display = 'none';
+            });
+        }
+
+        // 3. Date Filters
+        function initializeDateFilters() {
+            // Set default date range (last 30 days)
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today);
+            thirtyDaysAgo.setDate(today.getDate() - 30);
+            
+            document.getElementById('start-date').valueAsDate = thirtyDaysAgo;
+            document.getElementById('end-date').valueAsDate = today;
+
+            // Set up filter buttons
+            document.getElementById('apply-date-filter').addEventListener('click', function() {
+                fetchDashboardData();
+            });
+
+            document.getElementById('reset-date-filter').addEventListener('click', function() {
+                document.getElementById('start-date').valueAsDate = thirtyDaysAgo;
+                document.getElementById('end-date').valueAsDate = today;
+                fetchDashboardData();
+            });
+        }
+
+        // Initialize Scroll to Top
+        function initializeScrollToTop() {
+            const scrollToTopButton = document.getElementById('scroll-to-top');
+            
+            // Show/hide button based on scroll position
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    scrollToTopButton.classList.add('visible');
+                } else {
+                    scrollToTopButton.classList.remove('visible');
+                }
+            });
+            
+            // Scroll to top when button is clicked
+            scrollToTopButton.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
+
+        // Helper function to get date filter values
+        function getDateFilters() {
+            return {
+                startDate: document.getElementById('start-date').value,
+                endDate: document.getElementById('end-date').value
+            };
+        }
+
+        // 4. Data Fetching
+        function fetchDashboardData() {
+            const dateFilters = getDateFilters();
+            
+            // Fetch summary data
+            fetchSummaryData(dateFilters);
+            
+            // Fetch chart data
+            fetchCategoryRevenueData(dateFilters);
+            fetchCategoryDistributionData(dateFilters);
+            fetchRevenueChartData(dateFilters);
+            fetchPaymentMethodsData(dateFilters);
+            
+            // Fetch table data
+            fetchUpcomingEventsData(dateFilters);
+            fetchRecentPaymentsData(dateFilters);
+        }
+
+        // Fetch summary data for cards
+        function fetchSummaryData(dateFilters) {
+            // In a real implementation, you would send the date filters to the server
+            const url = `/api/dashboard/summary/?start_date=${dateFilters.startDate}&end_date=${dateFilters.endDate}`;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // This would be replaced with actual fetch() in production
+                const data = {
+                    totalEvents: 48,
+                    totalParticipants: 1254,
+                    totalRevenue: 125750,
+                    totalSpeakers: 32
+                };
+                
+                document.getElementById('total-events-value').innerHTML = `<div class="card-value">${data.totalEvents}</div>`;
+                document.getElementById('total-participants-value').innerHTML = `<div class="card-value">${data.totalParticipants.toLocaleString()}</div>`;
+                document.getElementById('total-revenue-value').innerHTML = `<div class="card-value">$${data.totalRevenue.toLocaleString()}</div>`;
+                document.getElementById('total-speakers-value').innerHTML = `<div class="card-value">${data.totalSpeakers}</div>`;
+            }, 1000);
+        }
+
+        // 5. Chart Rendering
+        // Fetch category revenue data for chart
+        function fetchCategoryRevenueData(dateFilters) {
+            // Updated to use the provided API endpoint
+            const url = `/api/dashboard/revenue/?start_date=${dateFilters.startDate}&end_date=${dateFilters.endDate}`;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // This would be replaced with actual fetch() in production
+                const data = {
+                    labels: ['Conferences', 'Workshops', 'Seminars', 'Webinars', 'Networking'],
+                    values: [45000, 32000, 28500, 12250, 8000]
+                };
+                
+                const chartEl = document.getElementById('category-revenue-chart');
+                chartEl.classList.remove('chart-loading');
+                chartEl.innerHTML = '<canvas id="categoryRevenueCanvas"></canvas>';
+                
+                new Chart(document.getElementById('categoryRevenueCanvas'), {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Revenue ($)',
+                            data: data.values,
+                            backgroundColor: [
+                                'rgba(52, 152, 219, 0.8)',
+                                'rgba(46, 204, 113, 0.8)',
+                                'rgba(155, 89, 182, 0.8)',
+                                'rgba(241, 196, 15, 0.8)',
+                                'rgba(231, 76, 60, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(52, 152, 219, 1)',
+                                'rgba(46, 204, 113, 1)',
+                                'rgba(155, 89, 182, 1)',
+                                'rgba(241, 196, 15, 1)',
+                                'rgba(231, 76, 60, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Revenue: $' + context.parsed.y.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }, 1200);
+        }
+
+        // Fetch category distribution data for chart
+        function fetchCategoryDistributionData(dateFilters) {
+            // Updated to use the provided API endpoint
+            const url = `/api/dashboard/category-distribution/?start_date=${dateFilters.startDate}&end_date=${dateFilters.endDate}`;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // This would be replaced with actual fetch() in production
+                const data = {
+                    labels: ['Conferences', 'Workshops', 'Seminars', 'Webinars', 'Networking'],
+                    values: [35, 25, 20, 15, 5]
+                };
+                
+                const chartEl = document.getElementById('category-distribution-chart');
+                chartEl.classList.remove('chart-loading');
+                chartEl.innerHTML = '<canvas id="categoryDistributionCanvas"></canvas>';
+                
+                new Chart(document.getElementById('categoryDistributionCanvas'), {
+                    type: 'pie',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.values,
+                            backgroundColor: [
+                                'rgba(52, 152, 219, 0.8)',
+                                'rgba(46, 204, 113, 0.8)',
+                                'rgba(155, 89, 182, 0.8)',
+                                'rgba(241, 196, 15, 0.8)',
+                                'rgba(231, 76, 60, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(52, 152, 219, 1)',
+                                'rgba(46, 204, 113, 1)',
+                                'rgba(155, 89, 182, 1)',
+                                'rgba(241, 196, 15, 1)',
+                                'rgba(231, 76, 60, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.parsed + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }, 1300);
+        }
+
+        // Fetch revenue trend data for chart
+        function fetchRevenueChartData(dateFilters) {
+            // Updated to use the provided API endpoint
+            const url = `/api/dashboard/revenue-trend/?start_date=${dateFilters.startDate}&end_date=${dateFilters.endDate}`;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // This would be replaced with actual fetch() in production
+                const data = {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'],
+                    values: [12500, 18200, 15800, 22000, 19500, 24800, 28000, 26500, 30000]
+                };
+                
+                const chartEl = document.getElementById('revenue-trend-chart');
+                chartEl.classList.remove('chart-loading');
+                chartEl.innerHTML = '<canvas id="revenueTrendCanvas"></canvas>';
+                
+                new Chart(document.getElementById('revenueTrendCanvas'), {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Monthly Revenue',
+                            data: data.values,
+                            fill: true,
+                            backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                            borderColor: 'rgba(52, 152, 219, 1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Revenue: $' + context.parsed.y.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }, 1400);
+        }
+
+        // Fetch payment methods data for chart
+        function fetchPaymentMethodsData(dateFilters) {
+            // Updated to use the provided API endpoint
+            const url = `/api/dashboard/payment-methods/?start_date=${dateFilters.startDate}&end_date=${dateFilters.endDate}`;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // This would be replaced with actual fetch() in production
+                const data = {
+                    labels: ['Credit Card', 'Mobile Money', 'Bank Transfer', 'PayPal', 'Cash'],
+                    values: [45, 25, 15, 10, 5]
+                };
+                
+                const chartEl = document.getElementById('payment-methods-chart');
+                chartEl.classList.remove('chart-loading');
+                chartEl.innerHTML = '<canvas id="paymentMethodsCanvas"></canvas>';
+                
+                new Chart(document.getElementById('paymentMethodsCanvas'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.values,
+                            backgroundColor: [
+                                'rgba(52, 152, 219, 0.8)',
+                                'rgba(46, 204, 113, 0.8)',
+                                'rgba(155, 89, 182, 0.8)',
+                                'rgba(241, 196, 15, 0.8)',
+                                'rgba(231, 76, 60, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(52, 152, 219, 1)',
+                                'rgba(46, 204, 113, 1)',
+                                'rgba(155, 89, 182, 1)',
+                                'rgba(241, 196, 15, 1)',
+                                'rgba(231, 76, 60, 1)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ' + context.parsed + '%';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }, 1500);
+        }
+
+        // 6. Table Population
+        // Fetch upcoming events data for table
+        function fetchUpcomingEventsData(dateFilters) {
+            const url = `/api/events/upcoming/?start_date=${dateFilters.startDate}&end_date=${dateFilters.endDate}`;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // This would be replaced with actual fetch() in production
+                const events = [
+                    {
+                        title: 'Annual Tech Conference',
+                        category: 'Conferences',
+                        start_date: '2023-10-15',
+                        end_date: '2023-10-17',
+                        location: 'New York Convention Center',
+                        price: 299.99,
+                        available_tickets: 120
+                    },
+                    {
+                        title: 'Web Development Workshop',
+                        category: 'Workshops',
+                        start_date: '2023-09-28',
+                        end_date: '2023-09-29',
+                        location: 'Online',
+                        price: 149.99,
+                        available_tickets: 45
+                    },
+                    {
+                        title: 'Digital Marketing Seminar',
+                        category: 'Seminars',
+                        start_date: '2023-10-05',
+                        end_date: '2023-10-05',
+                        location: 'Chicago Business Center',
+                        price: 99.99,
+                        available_tickets: 78
+                    },
+                    {
+                        title: 'AI in Business Webinar',
+                        category: 'Webinars',
+                        start_date: '2023-09-20',
+                        end_date: '2023-09-20',
+                        location: 'Online',
+                        price: 0,
+                        available_tickets: 210
+                    },
+                    {
+                        title: 'Startup Networking Event',
+                        category: 'Networking',
+                        start_date: '2023-10-10',
+                        end_date: '2023-10-10',
+                        location: 'San Francisco Innovation Hub',
+                        price: 49.99,
+                        available_tickets: 65
+                    }
+                ];
+
+                let eventsHtml = '';
+                events.forEach(event => {
+                    eventsHtml += `
+                        <tr>
+                            <td>${event.title}</td>
+                            <td>${event.category}</td>
+                            <td>${event.start_date}</td>
+                            <td>${event.end_date}</td>
+                            <td>${event.location}</td>
+                            <td>${event.price === 0 ? 'Free' : '$' + event.price.toFixed(2)}</td>
+                            <td>${event.available_tickets}</td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('upcoming-events-table').innerHTML = eventsHtml;
+            }, 1600);
+        }
+
+        // Fetch recent payments data for table
+        function fetchRecentPaymentsData(dateFilters) {
+            const url = `/api/payments/recent/?start_date=${dateFilters.startDate}&end_date=${dateFilters.endDate}`;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // This would be replaced with actual fetch() in production
+                const payments = [
+                    {
+                        participant: 'John Doe',
+                        event: 'Annual Tech Conference',
+                        amount: 299.99,
+                        payment_method: 'Credit Card',
+                        payment_date: '2023-09-15',
+                        status: 'PAID'
+                    },
+                    {
+                        participant: 'Jane Smith',
+                        event: 'Web Development Workshop',
+                        amount: 149.99,
+                        payment_method: 'PayPal',
+                        payment_date: '2023-09-12',
+                        status: 'PAID'
+                    },
+                    {
+                        participant: 'Robert Johnson',
+                        event: 'Digital Marketing Seminar',
+                        amount: 99.99,
+                        payment_method: 'Mobile Money',
+                        payment_date: '2023-09-10',
+                        status: 'PENDING'
+                    },
+                    {
+                        participant: 'Emily Davis',
+                        event: 'AI in Business Webinar',
+                        amount: 0,
+                        payment_method: 'Free Event',
+                        payment_date: '2023-09-08',
+                        status: 'PAID'
+                    },
+                    {
+                        participant: 'Michael Wilson',
+                        event: 'Startup Networking Event',
+                        amount: 49.99,
+                        payment_method: 'Bank Transfer',
+                        payment_date: '2023-09-05',
+                        status: 'PAID'
+                    }
+                ];
+
+                let paymentsHtml = '';
+                payments.forEach(payment => {
+                    let statusClass = 'badge-success';
+                    if (payment.status === 'PENDING') statusClass = 'badge-warning';
+                    if (payment.status === 'FAILED') statusClass = 'badge-danger';
+
+                    paymentsHtml += `
+                        <tr>
+                            <td>${payment.participant}</td>
+                            <td>${payment.event}</td>
+                            <td>${payment.amount === 0 ? 'Free' : '$' + payment.amount.toFixed(2)}</td>
+                            <td>${payment.payment_method}</td>
+                            <td>${payment.payment_date}</td>
+                            <td><span class="badge ${statusClass}">${payment.status}</span></td>
+                        </tr>
+                    `;
+                });
+
+                document.getElementById('recent-payments-table').innerHTML = paymentsHtml;
+            }, 1700);
+        }
+    </script>
+</body>
+</html>
