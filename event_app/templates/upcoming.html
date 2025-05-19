@@ -1,50 +1,203 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Upcoming Events</title>
-        <style>
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 20px 0;
-                background-color: #f9f9f9;
-            }
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upcoming Events</title>
 
-            th, td {
-                padding: 12px;
-                text-align: left;
-                border: 1px solid #ddd;
-            }
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet" />
 
-            th {
-                background-color: #007bff;
-                color: white;
-            }
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-            tr:nth-child(even) {
-                background-color: #f2f2f2;
-            }
+  <!-- DataTables Bootstrap 5 CSS -->
+  <link href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+  <!-- DataTables Buttons CSS -->
+  <link href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.bootstrap5.min.css" rel="stylesheet" />
 
-            tr:hover {
-                background-color: #ddd;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Upcoming Events</h1>
-        <table>
-            <thead>
-                <tr>
-                    <th>Event Title</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for event in upcoming %}
-                <tr>
-                    <td>{{ event.title }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </body>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #f0f4f8;
+      padding: 40px 20px;
+      color: #222;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-weight: 700;
+      color: #1a73e8;
+    }
+
+    .table-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgb(0 0 0 / 0.1);
+    }
+
+    /* Filters container */
+    .filters-row {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .filters-row label {
+      font-weight: 600;
+      margin-right: 8px;
+      color: #444;
+    }
+
+    .filters-row input[type="date"] {
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    /* DataTables adjustments */
+    .dataTables_wrapper .dataTables_filter {
+      float: none !important;
+      text-align: left !important;
+      margin-bottom: 10px;
+    }
+
+    table.dataTable thead th {
+      background-color: #1a73e8 !important;
+      color: white !important;
+      font-weight: 700;
+    }
+
+    table.dataTable tbody tr:hover {
+      background-color: #dbe9ff !important;
+      cursor: pointer;
+    }
+
+    /* Responsive DataTables Buttons */
+    .dt-buttons {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Upcoming Events</h1>
+
+  <div class="table-container">
+
+    <div class="filters-row">
+      <div>
+        <label for="minDate">From:</label>
+        <input type="date" id="minDate" name="minDate" />
+      </div>
+      <div>
+        <label for="maxDate">To:</label>
+        <input type="date" id="maxDate" name="maxDate" />
+      </div>
+    </div>
+
+    <table id="eventsTable" class="table table-striped table-bordered nowrap" style="width:100%">
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>Event Title</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in upcoming %}
+        <tr>
+          <td></td>
+          <td>{{ event.title }}</td>
+          <td>{{ event.start_date }}</td>
+          <td>{{ event.end_date }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- DataTables JS -->
+  <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+  <!-- DataTables Bootstrap 5 JS -->
+  <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+  <!-- DataTables Buttons JS -->
+  <script src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.bootstrap5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+  <script src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      // Initialize DataTable with export buttons
+      var table = $('#eventsTable').DataTable({
+        responsive: true,
+        lengthChange: false,
+        pageLength: 5,
+        order: [[2, 'asc']], // order by start date ascending
+        dom: 'Bfrtip', // show Buttons, filter input, table, pagination
+        buttons: [
+          'csvHtml5',
+          {
+            extend: 'pdfHtml5',
+            orientation: 'landscape',
+            pageSize: 'A4',
+            title: 'Upcoming Events',
+          }
+        ],
+        columnDefs: [
+          { orderable: false, searchable: false, targets: 0 }
+        ],
+      });
+
+      // Auto-numbering column #0
+      table.on('order.dt search.dt', function () {
+        table.column(0, { search: 'applied', order: 'applied' }).nodes().each(function (cell, i) {
+          cell.innerHTML = i + 1;
+        });
+      }).draw();
+
+      // Date range filtering
+      $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+          var min = $('#minDate').val();
+          var max = $('#maxDate').val();
+          var startDate = data[2]; // start date column
+          var endDate = data[3];   // end date column
+
+          if (!min && !max) {
+            return true;
+          }
+
+          if (min && startDate < min) {
+            return false;
+          }
+
+          if (max && endDate > max) {
+            return false;
+          }
+
+          return true;
+        }
+      );
+
+      // Redraw table on date input change
+      $('#minDate, #maxDate').change(function () {
+        table.draw();
+      });
+    });
+  </script>
+</body>
 </html>
