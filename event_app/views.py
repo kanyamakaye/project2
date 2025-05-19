@@ -13,7 +13,7 @@ from .forms import (
 )
 from .models import (
     Category, Event_management, Speaker_management, Participant_management,
-    Schedule_management, Payment, User, CartItem, EmailVerification
+    Schedule_management, Payment, User, CartItem, EmailVerification, GalleryImage
 )
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
@@ -1331,3 +1331,36 @@ def free_events_view(request):
     # Events marked as free and price = 0
     free_events = Event_management.objects.filter(is_free=True, price=0)
     return render(request, 'free_events.html', {'events': free_events})
+
+from django.http import JsonResponse
+from django.shortcuts import render
+from .forms import GalleryImageForm
+from .models import GalleryImage
+
+def upload_gallery_image(request):
+    if request.method == 'POST':
+        form = GalleryImageForm(request.POST, request.FILES)
+        files = request.FILES.getlist('image')
+
+        if form.is_valid():
+            images = []
+            for f in files:
+                image_instance = GalleryImage(
+                    title=form.cleaned_data['title'],
+                    image=f
+                )
+                image_instance.save()
+                images.append({
+                    'image_url': image_instance.image.url,
+                    'title': image_instance.title,
+                })
+            return JsonResponse({'success': True, 'images': images})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors}, status=400)
+    else:
+        form = GalleryImageForm()
+    return render(request, 'upload_gallery_image.html', {'form': form})
+
+def gallery_view(request):
+    images = GalleryImage.objects.all()
+    return render(request, 'gallery.html', {'images': images})

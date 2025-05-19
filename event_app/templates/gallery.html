@@ -1,0 +1,29 @@
+<!-- gallery.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Gallery</title>
+    <style>
+        .gallery-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 20px;
+        }
+        .gallery-container img {
+            width: 250px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center;">Event Gallery</h2>
+    <div class="gallery-container">
+        {% for img in images %}
+            <img src="{{ img.image.url }}" alt="Event Image">
+        {% endfor %}
+    </div>
+</body>
+</html>

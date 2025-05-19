@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 from .models import Participant_management, Payment, Schedule_management
 from django.utils import timezone
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # Home and Core URLs
@@ -95,4 +97,6 @@ urlpatterns = [
     #free event testing 
      path('events/paid/', views.paid_events_view, name='paid_events'),
      path('events/free/', views.free_events_view, name='free_events'),
-]
+     path('api/upload-gallery-image/', views.upload_gallery_image, name='upload_gallery_image'),
+     path('event_image/',views.gallery_view),
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

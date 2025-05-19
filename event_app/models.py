@@ -92,7 +92,13 @@ class Payment(models.Model):
 
     def __str__(self):
         return self.transaction_id
+class GalleryImage(models.Model):
+    title = models.CharField(max_length=100, blank=True)
+    image = models.ImageField(upload_to='gallery/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.title or f"Image {self.pk}"
 class CartItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Event_management, on_delete=models.CASCADE)

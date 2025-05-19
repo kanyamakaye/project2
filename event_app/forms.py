@@ -88,7 +88,12 @@ class ScheduleManagementForm(forms.ModelForm):
             raise ValidationError("End time must be after start time")
         
         return cleaned_data
+from .models import GalleryImage
 
+class GalleryImageForm(forms.ModelForm):
+    class Meta:
+        model = GalleryImage
+        fields = ['title', 'image']
 class PaymentForm(forms.ModelForm):
     class Meta:
         model = Payment
