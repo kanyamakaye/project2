@@ -1,11 +1,203 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Free Events</h2>
-<ul>
-  {% for event in events %}
-    <li>{{ event.title }} ({{ event.start_date }} - {{ event.end_date }}) - Free</li>
-  {% empty %}
-    <li>No free events available.</li>
-  {% endfor %}
-</ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    input, button {
+      padding: 8px 12px;
+      font-size: 14px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #3498db;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #3498db;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    .pagination {
+      margin-top: 10px;
+    }
+
+    .pagination button {
+      margin-right: 5px;
+    }
+
+    .no-events {
+      color: #c0392b;
+      font-style: italic;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Free Events</h2>
+
+  <div class="controls">
+    <input type="text" id="filterInput" placeholder="Filter by title...">
+    <input type="date" id="startDate">
+    <input type="date" id="endDate">
+    <button onclick="exportToCSV()">Export CSV</button>
+  </div>
+
+  {% if events %}
+    <table id="eventsTable">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in events %}
+          <tr>
+            <td>{{ event.title }}</td>
+            <td>{{ event.start_date }}</td>
+            <td>{{ event.end_date }}</td>
+            <td style="color: green;">Free</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="pagination" id="pagination"></div>
+
+  {% else %}
+    <p class="no-events">No free events available.</p>
+  {% endif %}
+
+  <script>
+    const filterInput = document.getElementById('filterInput');
+    const startDateInput = document.getElementById('startDate');
+    const endDateInput = document.getElementById('endDate');
+    const table = document.getElementById('eventsTable');
+    const rows = Array.from(table.getElementsByTagName('tbody')[0].rows);
+    const paginationContainer = document.getElementById('pagination');
+    const rowsPerPage = 5;
+    let currentPage = 1;
+
+    function filterAndPaginate() {
+      const keyword = filterInput.value.toLowerCase();
+      const startDate = startDateInput.value;
+      const endDate = endDateInput.value;
+
+      const filteredRows = rows.filter(row => {
+        const title = row.cells[0].textContent.toLowerCase();
+        const start = row.cells[1].textContent;
+        const end = row.cells[2].textContent;
+
+        const matchesKeyword = title.includes(keyword);
+        const matchesStartDate = !startDate || start >= startDate;
+        const matchesEndDate = !endDate || end <= endDate;
+
+        return matchesKeyword && matchesStartDate && matchesEndDate;
+      });
+
+      paginate(filteredRows);
+    }
+
+    function paginate(filteredRows) {
+      const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+      paginationContainer.innerHTML = '';
+
+      for (let i = 1; i <= totalPages; i++) {
+        const btn = document.createElement('button');
+        btn.innerText = i;
+        btn.onclick = () => {
+          currentPage = i;
+          showPage(filteredRows);
+        };
+        paginationContainer.appendChild(btn);
+      }
+
+      currentPage = 1;
+      showPage(filteredRows);
+    }
+
+    function showPage(filteredRows) {
+      rows.forEach(row => row.style.display = 'none');
+      const start = (currentPage - 1) * rowsPerPage;
+      const end = start + rowsPerPage;
+
+      filteredRows.slice(start, end).forEach(row => {
+        row.style.display = '';
+      });
+    }
+
+    function exportToCSV() {
+      let csv = 'Title,Start Date,End Date,Status\n';
+      const visibleRows = rows.filter(row => row.style.display !== 'none');
+      visibleRows.forEach(row => {
+        const cols = Array.from(row.cells).map(cell => `"${cell.textContent}"`);
+        csv += cols.join(',') + '\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'free_events.csv';
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+
+    filterInput.addEventListener('keyup', filterAndPaginate);
+    startDateInput.addEventListener('change', filterAndPaginate);
+    endDateInput.addEventListener('change', filterAndPaginate);
+
+    // Initial load
+    filterAndPaginate();
+  </script>
+
+</body>
+</html>
 {% endblock %}
