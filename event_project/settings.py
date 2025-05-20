@@ -36,7 +36,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://online-event-management-system-project.onrender.com",
 ]
 
-
+LOGIN_URL = '/login/' 
 # Application definition
 
 

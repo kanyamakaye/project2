@@ -5,6 +5,7 @@ from django.template import loader
 from django.db.models import Count, Sum, Avg, Min, Max
 from django.utils import timezone
 from datetime import timedelta, datetime
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import (
     EventManagementForm, SpeakerManagementForm, ParticipantManagementForm,
