@@ -17,17 +17,41 @@ class Category(models.Model):
         return self.name
 
 class Event_management(models.Model):
+    CAMPUS_CHOICES = [
+        ('Nyarugenge Campus', 'Nyarugenge Campus: College of Science and Technology (CST)'),
+        ('Gikondo Campus', 'Gikondo Campus: College of Business and Economics (CBE)'),
+        ('Remera Campus', 'Remera Campus: College of Medicine and Health Sciences (CMHS)'),
+        ('Huye Campus', 'Huye Campus'),
+        ('Busogo Campus', 'Busogo Campus: College of Agriculture, Animal Sciences and Veterinary Medicine (CAVM)'),
+        ('Nyagatare Campus', 'Nyagatare Campus'),
+        ('Rukara Campus', 'Rukara Campus: College of Education (CE)'),
+        ('Rusizi Campus', 'Rusizi Campus'),
+        ('Rwamagana Campus', 'Rwamagana Campus'),
+        ('Rubirizi Campus', 'Rubirizi Campus'),
+        ('Nyamishaba Campus', 'Nyamishaba Campus'),
+        ('Kicukiro Campus', 'Kicukiro Campus'),
+        ('Kavumu Campus', 'Kavumu Campus'),
+        ('Tumba Campus', 'Tumba Campus'),
+    ]
+
     title = models.CharField(max_length=100)
     description = models.TextField()
     start_date = models.DateField()
     end_date = models.DateField()
-    location = models.CharField(max_length=100)
+
+    # Campus field used as event location
+    location = models.CharField(
+        max_length=100,
+        choices=CAMPUS_CHOICES,
+        default='Nyarugenge Campus',
+        verbose_name="Event Location (Campus)"
+    )
+
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     is_free = models.BooleanField(default=True)
     price = models.DecimalField(max_digits=8, decimal_places=2, default=0.00)
     image = models.ImageField(upload_to='events/', blank=True, null=True)
     available_tickets = models.PositiveIntegerField(default=0)
-   
 
     def __str__(self):
         return self.title

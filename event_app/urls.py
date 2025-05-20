@@ -103,6 +103,7 @@ urlpatterns = [
     path('highest-paid-event/', views.highest_paid_event, name='highest_paid_event'),
     path('total-speakers/', views.total_speakers, name='total_speakers'),
     path('total-participants/', views.total_participants, name='total_participants'),
+    path('total-payment/', views.total_payment_view, name='total_payment'),
     path('contact/', views.contact_view, name='contact'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1379,5 +1379,9 @@ def total_participants(request):
     total = Participant_management.objects.count()
     return render(request, 'total_participants.html', {'total': total})
 
+def total_payment_view(request):
+    total_payment = Payment.objects.aggregate(total=Sum('amount_paid'))['total'] or 0
+    return render(request, 'total_payment.html', {'total_payment': total_payment})
+
 def contact_view(request):
     return render(request, 'contact.html')
