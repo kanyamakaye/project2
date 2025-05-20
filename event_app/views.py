@@ -1378,3 +1378,6 @@ def total_speakers(request):
 def total_participants(request):
     total = Participant_management.objects.count()
     return render(request, 'total_participants.html', {'total': total})
+
+def contact_view(request):
+    return render(request, 'contact.html')
