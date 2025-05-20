@@ -69,16 +69,30 @@ class Speaker_management(models.Model):
         return self.name
 
 class Participant_management(models.Model):
+    UNIVERSITY_CHOICES = [
+        ('University of Rwanda', 'University of Rwanda'),
+        ('Kigali Independent University (ULK)', 'Kigali Independent University (ULK)'),
+        ('Adventist University of Central Africa (AUCA)', 'Adventist University of Central Africa (AUCA)'),
+        ('Kigali Health Institute', 'Kigali Health Institute'),
+        ('INES Ruhengeri', 'INES Ruhengeri'),
+        ('Other', 'Other'),
+    ]
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=150)
     email = models.EmailField()
     phone_number = models.CharField(max_length=20)
     sex = models.CharField(max_length=1)
-    university = models.CharField(max_length=200)
-    Event = models.ForeignKey(Event_management, on_delete=models.CASCADE)
+    university = models.CharField(
+        max_length=100,
+        choices=UNIVERSITY_CHOICES,
+        default='University of Rwanda',
+        verbose_name="University"
+    )
+    Event = models.ForeignKey('Event_management', on_delete=models.CASCADE)
+
     def __str__(self):
         return self.name
-
 class Schedule_management(models.Model):
     event = models.ForeignKey(Event_management, on_delete=models.CASCADE)
     start_time = models.DateTimeField()

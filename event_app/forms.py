@@ -63,7 +63,7 @@ class ParticipantManagementForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter participant email'}),
             'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter phone number'}),
             'sex': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'enter F or M'}),
-            'university': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter your university'}),
+            'university': forms.Select(attrs={'class': 'form-control'}),
             'Event': forms.Select(attrs={'class': 'form-control'}),
         }
 
