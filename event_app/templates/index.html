@@ -12,25 +12,26 @@
     <style>
         /**
          * Table of Contents:
-         * 1. Base Styles
-         * 2. Layout
-         * 3. Sidebar
-         * 4. Main Content
-         * 5. Cards
-         * 6. Charts
-         * 7. Tables
-         * 8. Badges
-         * 9. Buttons
-         * 10. Filters
-         * 11. Footer
-         * 12. Responsive Styles
-         * 13. Animations
-         * 14. Modern UI Elements
+         * 1. Variables & Base Styles
+         * 2. Layout Components
+         * 3. Navigation & Sidebar
+         * 4. Header Components
+         * 5. Card Components
+         * 6. Chart Components
+         * 7. Table Components
+         * 8. UI Elements (Badges, Buttons, etc.)
+         * 9. Form Elements
+         * 10. Footer Components
+         * 11. Utility Classes
+         * 12. Animations
+         * 13. Responsive Styles
          */
 
-        /* 1. Base Styles */
+        /* ====================== */
+        /* 1. Variables & Base Styles */
+        /* ====================== */
         :root {
-            /* Two-Color Professional Scheme */
+            /* Color Scheme */
             --primary-color: #4f46e5;      /* Rich indigo (primary) */
             --primary-light: #6366f1;      /* Lighter indigo */
             --primary-dark: #4338ca;       /* Darker indigo */
@@ -45,12 +46,13 @@
             --text-color: #374151;         /* Main text color */
             --border-color: #e5e7eb;       /* Borders */
             
-            /* Functional colors derived from the two main colors */
+            /* Functional colors */
             --success-color: var(--secondary-color);
             --warning-color: #f59e0b;      /* Amber for warnings */
             --danger-color: #ef4444;       /* Red for errors */
+            --info-color: #3b82f6;         /* Blue for info */
             
-            /* Shadows and other variables */
+            /* UI Elements */
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
@@ -74,7 +76,9 @@
             min-height: 100vh;
         }
 
-        /* 2. Layout */
+        /* ====================== */
+        /* 2. Layout Components */
+        /* ====================== */
         .dashboard-container {
             display: flex;
             flex: 1;
@@ -87,7 +91,31 @@
             min-height: 100vh;
         }
 
-        /* 3. Sidebar */
+        .main-content {
+            flex: 1;
+            padding: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .main-content-inner {
+            padding: 30px;
+            flex: 1;
+        }
+
+        .main-content h1 {
+            margin-top: 0;
+            margin-bottom: 24px;
+            color: var(--secondary-color);
+            font-size: 1.75rem;
+            font-weight: 700;
+        }
+
+        /* ====================== */
+        /* 3. Navigation & Sidebar */
+        /* ====================== */
         .sidebar {
             width: 280px;
             background-color: white;
@@ -99,7 +127,7 @@
             height: 100vh;
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 1000;
             box-shadow: var(--shadow-md);
         }
 
@@ -124,39 +152,6 @@
             padding: 0;
             margin: 0;
         }
-
-        // ... existing code ...
-
-        /* 3. Sidebar */
-        .sidebar {
-            width: 280px;
-            background-color: white;
-            color: var(--dark-color);
-            padding: 0;
-            transition: var(--transition);
-            flex-shrink: 0;
-            overflow-y: auto;
-            height: 100vh;
-            position: sticky;
-            top: 0;
-            z-index: 1000; /* Increased z-index to ensure it stays above other elements */
-            box-shadow: var(--shadow-md);
-        }
-
-        /* Welcome Header */
-        .welcome-header {
-            background-color: white;
-            color: var(--dark-color);
-            padding: 30px;
-            text-align: center;
-            box-shadow: var(--shadow-md);
-            position: sticky;
-            top: 0;
-            z-index: 999; /* Slightly lower than sidebar to avoid overlap issues */
-            border-bottom: 1px solid var(--border-color);
-        }
-
-// ... existing code ...
 
         .sidebar-section {
             margin-top: 10px;
@@ -207,62 +202,108 @@
             font-size: 0.9rem;
         }
 
-        /* 4. Main Content */
-        .main-content {
-            flex: 1;
-            padding: 0;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        .main-content-inner {
-            padding: 30px;
-            flex: 1;
-        }
-
-        .main-content h1 {
-            margin-top: 0;
-            margin-bottom: 24px;
-            color: var(--secondary-color);
-            font-size: 1.75rem;
-            font-weight: 700;
-        }
-
+        /* ====================== */
+        /* 4. Header Components */
+        /* ====================== */
         /* Welcome Header */
         .welcome-header {
-            background-color: white;
-            color: var(--dark-color);
-            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-color) 100%);
+            color: white;
+            padding: 40px 30px;
             text-align: center;
             box-shadow: var(--shadow-md);
             position: relative;
-            overflow: hidden;
             border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
         }
 
         .welcome-header::before {
-            content: none;
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            z-index: 1;
         }
 
         .welcome-header h1 {
             margin: 0;
-            font-size: 2.2rem;
-            color: var(--primary-color);
+            font-size: 2.4rem;
+            color: white;
             position: relative;
             z-index: 2;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .welcome-header p {
-            margin-top: 10px;
-            font-size: 1.1rem;
-            color: var(--text-color);
+            margin-top: 15px;
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .welcome-header .welcome-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
             position: relative;
             z-index: 2;
         }
 
-        /* 5. Cards */
+        .welcome-header .btn-welcome {
+            background-color: white;
+            color: var(--primary-color);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .welcome-header .btn-welcome:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .welcome-header .btn-welcome-outline {
+            background-color: transparent;
+            color: white;
+            border: 2px solid rgba(255,255,255,0.7);
+        }
+
+        .welcome-header .btn-welcome-outline:hover {
+            background-color: rgba(255,255,255,0.1);
+            border-color: white;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title svg {
+            margin-right: 10px;
+        }
+
+        /* ====================== */
+        /* 5. Card Components */
+        /* ====================== */
         .cards-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -322,15 +363,9 @@
             color: var(--secondary-color);
         }
 
-        .loading-placeholder {
-            height: 36px;
-            width: 100px;
-            background-color: #eee;
-            border-radius: 4px;
-            animation: pulse 1.5s infinite;
-        }
-
-        /* 6. Charts */
+        /* ====================== */
+        /* 6. Chart Components */
+        /* ====================== */
         .charts-section {
             margin-bottom: 30px;
         }
@@ -370,7 +405,9 @@
             animation: pulse 1.5s infinite;
         }
 
-        /* 7. Tables */
+        /* ====================== */
+        /* 7. Table Components */
+        /* ====================== */
         .tables-section {
             margin-bottom: 30px;
         }
@@ -426,7 +463,10 @@
             background-color: #f8f9fa;
         }
 
-        /* 8. Badges */
+        /* ====================== */
+        /* 8. UI Elements */
+        /* ====================== */
+        /* Badges */
         .badge {
             display: inline-block;
             padding: 4px 8px;
@@ -455,7 +495,7 @@
             color: #0369a1;
         }
 
-        /* 9. Buttons */
+        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -466,6 +506,7 @@
             cursor: pointer;
             transition: var(--transition);
             border: none;
+            text-decoration: none;
         }
 
         .btn-primary {
@@ -500,7 +541,66 @@
             height: 16px;
         }
 
-        /* 10. Filters */
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            padding: 12px 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .action-btn svg {
+            margin-right: 8px;
+        }
+
+        /* Scroll to Top */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-md);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 100;
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+        }
+
+        /* ====================== */
+        /* 9. Form Elements */
+        /* ====================== */
         .filters-section {
             background-color: white;
             padding: 20px;
@@ -549,7 +649,9 @@
             background-color: white;
         }
 
-        /* 11. Footer */
+        /* ====================== */
+        /* 10. Footer Components */
+        /* ====================== */
         .footer {
             background-color: var(--secondary-color);
             color: white;
@@ -632,7 +734,35 @@
             margin: 0;
         }
 
-        /* 12. Responsive Styles */
+        /* ====================== */
+        /* 11. Utility Classes */
+        /* ====================== */
+        .loading-placeholder {
+            height: 36px;
+            width: 100px;
+            background-color: #eee;
+            border-radius: 4px;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* ====================== */
+        /* 12. Animations */
+        /* ====================== */
+        @keyframes pulse {
+            0% {
+                opacity: 0.6;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                opacity: 0.6;
+            }
+        }
+
+        /* ====================== */
+        /* 13. Responsive Styles */
+        /* ====================== */
         @media (max-width: 1024px) {
             .charts-container {
                 grid-template-columns: 1fr;
@@ -669,11 +799,20 @@
             }
 
             .welcome-header {
-                padding: 20px;
+                padding: 30px 20px;
             }
 
             .welcome-header h1 {
                 font-size: 1.8rem;
+            }
+            
+            .welcome-header p {
+                font-size: 1rem;
+            }
+            
+            .welcome-header .welcome-actions {
+                flex-direction: column;
+                gap: 10px;
             }
 
             .cards-container {
@@ -685,91 +824,10 @@
                 gap: 20px;
             }
         }
-
-        /* 13. Animations */
-        @keyframes pulse {
-            0% {
-                opacity: 0.6;
-            }
-            50% {
-                opacity: 0.8;
-            }
-            100% {
-                opacity: 0.6;
-            }
-        }
-
-        /* 14. Modern UI Elements */
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--dark-color);
-            display: flex;
-            align-items: center;
-        }
-
-        .section-title svg {
-            margin-right: 10px;
-        }
-
-        .quick-actions {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            display: flex;
-            align-items: center;
-            background-color: white;
-            padding: 12px 20px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            cursor: pointer;
-            border: none;
-            color: var(--text-color);
-            font-weight: 500;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .action-btn svg {
-            margin-right: 8px;
-        }
-
-        .scroll-to-top {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background-color: var(--primary-color);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: var(--shadow-md);
-            opacity: 0;
-            transition: var(--transition);
-            z-index: 100;
-        }
-
-        .scroll-to-top.visible {
-            opacity: 1;
-        }
     </style>
 </head>
 <body>
+    <!-- Main Dashboard Container -->
     <div class="dashboard-container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar" id="sidebar">
@@ -784,6 +842,7 @@
                 </button>
             </div>
             
+            <!-- Main Navigation Menu -->
             <nav>
                 <ul>
                     <!-- Dashboard -->
@@ -863,7 +922,7 @@
                             <li><a href="/total-participants/">Participant Stats</a></li>
                             <li><a href="/total-speakers/">Speaker Stats</a></li>
                             <li><a href="/highest-paid-event/">Highest Paid Event</a></li>
-                             <li><a href=" /total-payment/">Total Revenue</a></li>
+                            <li><a href="/total-payment/">Total Revenue</a></li>
                         </ul>
                     </li>
 
@@ -914,11 +973,26 @@
                         </a>
                         <ul class="sidebar-submenu">
                             <li><a href="/payment/">Add Payment</a></li>
-                             <li><a href="/payments/">View Payments</a></li>
+                            <li><a href="/payments/">View Payments</a></li>
                         </ul>
                     </li>
 
-                  
+                    <!-- Event Gallery -->
+                    <li>
+                        <a href="/event-gallery/">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                <polyline points="21 15 16 10 5 21"></polyline>
+                            </svg>
+                            Event Gallery
+                        </a>
+                        <ul class="sidebar-submenu">
+                            <li><a href="/event-gallery/">View Gallery</a></li>
+                            <li><a href="/event-gallery/upload/">Upload Images</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </nav>
         </aside>
 
@@ -928,14 +1002,32 @@
             <main class="main-content">
                 <!-- Welcome Header -->
                 <div class="welcome-header">
-                    <h1>Welcome To Online Event Management System</h1>
-                    <p>Manage your events, participants, and payments all in one place</p>
+                    <h1>Welcome to Event Management System</h1>
+                    <p>Streamline your event planning, manage participants, and track payments all in one powerful dashboard</p>
+                    <div class="welcome-actions">
+                        <a href="/event-form/" class="btn-welcome">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M11 12H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1Z"></path>
+                                <path d="M15 6h6"></path>
+                                <path d="M18 3v6"></path>
+                            </svg>
+                            Create New Event
+                        </a>
+                        <a href="/analytics/" class="btn-welcome btn-welcome-outline">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 3v18h18"></path>
+                                <path d="m19 9-5 5-4-4-3 3"></path>
+                            </svg>
+                            View Analytics
+                        </a>
+                    </div>
                 </div>
                 
+                <!-- Main Dashboard Content -->
                 <div class="main-content-inner">
                     <h1>Dashboard Overview</h1>
                     
-                    <!-- Quick Actions -->
+                    <!-- Quick Actions Section -->
                     <div class="quick-actions">
                         <button class="action-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -973,7 +1065,7 @@
                         </button>
                     </div>
                     
-                    <!-- Date Range Filter -->
+                    <!-- Date Range Filter Section -->
                     <section class="filters-section">
                         <div class="section-title">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -995,7 +1087,7 @@
                         </div>
                     </section>
                     
-                    <!-- Dashboard Summary Cards -->
+                    <!-- Dashboard Summary Cards Section -->
                     <section class="summary-section">
                         <div class="section-title">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1068,7 +1160,7 @@
                         </div>
                     </section>
 
-                    <!-- Dashboard Charts -->
+                    <!-- Dashboard Charts Section -->
                     <section class="charts-section">
                         <div class="section-title">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1084,7 +1176,7 @@
                             </svg>
                             Data Visualization
                         </div>
-                        <!-- First Row -->
+                        <!-- First Row of Charts -->
                         <div class="charts-container">
                             <!-- Revenue by Category Chart -->
                             <div class="chart">
@@ -1103,7 +1195,7 @@
                             </div>
                         </div>
 
-                        <!-- Second Row -->
+                        <!-- Second Row of Charts -->
                         <div class="charts-container">
                             <!-- Revenue Trends Chart -->
                             <div class="chart">
@@ -1230,7 +1322,22 @@
     
     <!-- Application Scripts -->
     <script>
+        /**
+         * Event Management Dashboard JavaScript
+         * 
+         * Table of Contents:
+         * 1. Initialization
+         * 2. Sidebar Functionality
+         * 3. Date Filters
+         * 4. Scroll to Top
+         * 5. Data Fetching
+         * 6. Chart Rendering
+         * 7. Table Population
+         */
+
+        // =====================
         // 1. Initialization
+        // =====================
         document.addEventListener('DOMContentLoaded', function() {
             initializeSidebar();
             initializeDateFilters();
@@ -1238,7 +1345,9 @@
             initializeScrollToTop();
         });
 
+        // =====================
         // 2. Sidebar Functionality
+        // =====================
         function initializeSidebar() {
             const toggleSidebar = document.getElementById('toggle-sidebar');
             const sidebar = document.getElementById('sidebar');
@@ -1282,7 +1391,9 @@
             });
         }
 
+        // =====================
         // 3. Date Filters
+        // =====================
         function initializeDateFilters() {
             // Set default date range (last 30 days)
             const today = new Date();
@@ -1304,7 +1415,9 @@
             });
         }
 
-        // Initialize Scroll to Top
+        // =====================
+        // 4. Scroll to Top
+        // =====================
         function initializeScrollToTop() {
             const scrollToTopButton = document.getElementById('scroll-to-top');
             
@@ -1334,7 +1447,9 @@
             };
         }
 
-        // 4. Data Fetching
+        // =====================
+        // 5. Data Fetching
+        // =====================
         function fetchDashboardData() {
             const dateFilters = getDateFilters();
             
@@ -1374,7 +1489,9 @@
             }, 1000);
         }
 
-        // 5. Chart Rendering
+        // =====================
+        // 6. Chart Rendering
+        // =====================
         // Fetch category revenue data for chart
         function fetchCategoryRevenueData(dateFilters) {
             // Updated to use the provided API endpoint
@@ -1614,7 +1731,9 @@
             }, 1500);
         }
 
-        // 6. Table Population
+        // =====================
+        // 7. Table Population
+        // =====================
         // Fetch upcoming events data for table
         function fetchUpcomingEventsData(dateFilters) {
             const url = `/api/events/upcoming/?start_date=${dateFilters.startDate}&end_date=${dateFilters.endDate}`;

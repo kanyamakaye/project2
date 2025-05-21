@@ -1,29 +1,68 @@
-<!-- gallery.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Event Gallery</title>
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h2 {
+            text-align: center;
+            padding: 20px;
+            background-color: #007bff;
+            color: white;
+            margin: 0;
+        }
+
         .gallery-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
-            padding: 20px;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px;
+            background-color: #fff;
         }
+
         .gallery-container img {
             width: 250px;
-            height: auto;
+            height: 200px;
+            object-fit: cover;
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .no-images {
+            text-align: center;
+            font-size: 18px;
+            color: #888;
+            padding: 50px;
         }
     </style>
 </head>
 <body>
-    <h2 style="text-align:center;">Event Gallery</h2>
-    <div class="gallery-container">
-        {% for img in images %}
-            <img src="{{ img.image.url }}" alt="Event Image">
-        {% endfor %}
-    </div>
+
+    <h2>Event Gallery</h2>
+
+    {% if images %}
+        <div class="gallery-container">
+            {% for img in images %}
+                <img src="{{ img.image.url }}" alt="Event Image">
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="no-images">No images available to display.</div>
+    {% endif %}
+
 </body>
 </html>

@@ -4,7 +4,6 @@ from .models import Participant_management, Payment, Schedule_management
 from django.utils import timezone
 from django.conf import settings
 from django.conf.urls.static import static
-
 urlpatterns = [
     # Home and Core URLs
     path('', views.home, name='home'),

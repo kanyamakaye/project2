@@ -8,163 +8,615 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
     <style>
-        /* Global Styles */
+        /* =====================
+           VARIABLES & RESET
+        ===================== */
         :root {
+            /* Color Scheme */
             --primary: #4f46e5;
+            --primary-light: #6366f1;
             --primary-dark: #4338ca;
             --secondary: #f97316;
+            --secondary-light: #fb923c;
+            --secondary-dark: #ea580c;
             --dark: #1e293b;
             --light: #f8fafc;
             --gray: #64748b;
+            --gray-light: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            
+            /* Typography */
+            --font-primary: 'Poppins', sans-serif;
+            
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-xxl: 3rem;
+            
+            /* Borders */
+            --border-radius-sm: 0.25rem;
+            --border-radius: 0.5rem;
+            --border-radius-lg: 1rem;
+            --border-radius-xl: 1.5rem;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition: 0.3s ease;
+            --transition-slow: 0.5s ease;
         }
 
+        /* =====================
+           BASE STYLES
+        ===================== */
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: var(--font-primary);
             background-color: var(--light);
             color: var(--dark);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
         }
 
-        /* Navigation Bar */
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+        }
+
+        a {
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .section-padding {
+            padding: 5rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-header h2 {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        .section-header p {
+            color: var(--gray);
+            max-width: 700px;
+            margin: 1rem auto 0;
+        }
+
+        /* =====================
+           ANIMATIONS
+        ===================== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideLeft {
+            from { transform: translateX(30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideRight {
+            from { transform: translateX(-30px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .animate-slideUp {
+            animation: slideUp 0.8s ease forwards;
+        }
+
+        .animate-slideDown {
+            animation: slideDown 0.8s ease forwards;
+        }
+
+        .animate-slideLeft {
+            animation: slideLeft 0.8s ease forwards;
+        }
+
+        .animate-slideRight {
+            animation: slideRight 0.8s ease forwards;
+        }
+
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .animate-spin {
+            animation: spin 10s linear infinite;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+        .delay-600 { animation-delay: 0.6s; }
+        .delay-700 { animation-delay: 0.7s; }
+        .delay-800 { animation-delay: 0.8s; }
+        .delay-900 { animation-delay: 0.9s; }
+        .delay-1000 { animation-delay: 1s; }
+
+        /* =====================
+           NAVIGATION
+        ===================== */
         .navbar {
-            position: sticky;
+            position: fixed;
             top: 0;
+            left: 0;
+            right: 0;
             z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem 0;
+            transition: var(--transition);
+            background-color: transparent;
         }
 
-        /* Hero Section */
+        .navbar.scrolled {
+            background-color: var(--dark);
+            padding: 0.5rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--light) !important;
+            position: relative;
+        }
+
+        .navbar-brand::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary);
+            transition: var(--transition);
+        }
+
+        .navbar-brand:hover::after {
+            width: 100%;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--light) !important;
+            font-weight: 500;
+            padding: 0.5rem 1rem !important;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .navbar-nav .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: var(--secondary);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .navbar-nav .nav-link:hover::after,
+        .navbar-nav .nav-link.active::after {
+            width: 80%;
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+
+        .navbar-toggler-icon {
+            width: 24px;
+            height: 24px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        /* =====================
+           HERO SECTION
+        ===================== */
         .hero-section {
             background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             color: white;
-            padding: 100px 0;
+            padding: 180px 0 100px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
         }
 
         .hero-title {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: 700;
             margin-bottom: 20px;
+            opacity: 0;
+            animation: slideDown 1s ease forwards;
         }
 
         .hero-subtitle {
             font-size: 1.5rem;
             margin-bottom: 30px;
+            opacity: 0;
+            animation: slideUp 1s ease forwards 0.3s;
+        }
+
+        .hero-buttons {
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 0.6s;
         }
 
         .btn-hero {
             padding: 12px 30px;
             font-size: 1.1rem;
             margin: 0 10px;
+            border-radius: 50px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
         }
 
-        /* Card Section */
+        .btn-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .btn-hero:hover::before {
+            width: 100%;
+        }
+
+        .btn-hero:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* =====================
+           CARD SECTION
+        ===================== */
         .card-section {
-            padding: 60px 0;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-section::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0) 70%);
+            z-index: -1;
+        }
+
+        .card-section::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            left: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.1) 0%, rgba(249, 115, 22, 0) 70%);
+            z-index: -1;
         }
 
         .card {
             border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
             margin-bottom: 20px;
+            overflow: hidden;
+            height: 100%;
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
         }
 
         .card-icon {
             font-size: 2.5rem;
             margin-bottom: 15px;
             color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.2);
+            color: var(--secondary);
         }
 
         .card-title {
             font-weight: 600;
             margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
         }
 
-        /* Testimonial Section */
-        .testimonial-section {
-            background-color: #f1f5f9;
-            padding: 60px 0;
+        .card-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
         }
 
-        .testimonial-card {
-            background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .card:hover .card-title::after {
+            width: 100%;
         }
 
-        .testimonial-text {
-            font-style: italic;
-            margin-bottom: 20px;
+        /* =====================
+           MAP SECTION
+        ===================== */
+        .map-section {
+            padding: 80px 0;
+            background-color: #f8f9fa;
+            position: relative;
+            overflow: hidden;
         }
 
-        .testimonial-author {
-            font-weight: 600;
+        .map-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0) 70%);
+            z-index: 0;
         }
 
-        /* Footer */
-        footer {
-            background-color: var(--dark);
-            color: white;
-            padding: 60px 0 20px;
+        #event-map {
+            height: 500px;
+            width: 100%;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
         }
 
-        .footer-links a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 10px;
+        #event-map:hover {
+            box-shadow: var(--shadow-lg);
         }
 
-        .footer-links a:hover {
-            color: var(--secondary);
+        /* =====================
+           SPEAKER SECTION
+        ===================== */
+        .speaker-section {
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
         }
 
-        .social-icons a {
-            color: white;
-            font-size: 1.5rem;
-            margin-right: 15px;
+        .speaker-section::after {
+            content: '';
+            position: absolute;
+            bottom: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.1) 0%, rgba(249, 115, 22, 0) 70%);
+            z-index: -1;
         }
 
-        .social-icons a:hover {
-            color: var(--secondary);
+        .speaker-card {
+            border: none;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            overflow: hidden;
+            height: 100%;
         }
 
-        /* Analytics Section (Admin Only) */
+        .speaker-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .speaker-card .card-img-top {
+            height: 250px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .speaker-card:hover .card-img-top {
+            transform: scale(1.05);
+        }
+
+        .speaker-card .card-body {
+            position: relative;
+            z-index: 1;
+        }
+
+        .speaker-card .social-links {
+            font-size: 1.2rem;
+        }
+
+        .speaker-card .social-links a {
+            margin-right: 10px;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+
+        .speaker-card .social-links a:hover {
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* =====================
+           ANALYTICS SECTION
+        ===================== */
         .analytics-section {
             background-color: #f8f9fa;
-            padding: 60px 0;
-            display: none;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
         }
 
-        .analytics-header {
-            text-align: center;
-            margin-bottom: 40px;
+        .analytics-section::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0) 70%);
+            z-index: 0;
         }
 
         .analytics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
             margin-bottom: 40px;
         }
 
         .stat-card {
             background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-lg);
+            padding: 30px 20px;
+            box-shadow: var(--shadow);
             text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background: linear-gradient(to bottom, rgba(79, 70, 229, 0.05) 0%, rgba(79, 70, 229, 0) 100%);
+            transition: var(--transition);
+            z-index: -1;
+        }
+
+        .stat-card:hover::before {
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card i {
+            color: var(--primary);
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover i {
+            transform: scale(1.2);
+            color: var(--secondary);
         }
 
         .stat-value {
@@ -172,19 +624,30 @@
             font-weight: 700;
             color: var(--primary);
             margin: 10px 0;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover .stat-value {
+            color: var(--primary-dark);
         }
 
         .stat-label {
             color: var(--gray);
             font-size: 1rem;
+            margin-bottom: 15px;
         }
 
         .chart-container {
             background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: var(--border-radius-lg);
+            padding: 25px;
+            box-shadow: var(--shadow);
             margin-bottom: 30px;
+            transition: var(--transition);
+        }
+
+        .chart-container:hover {
+            box-shadow: var(--shadow-lg);
         }
 
         .chart-header {
@@ -194,63 +657,372 @@
             align-items: center;
         }
 
-        /* Map and Speaker Section */
-        .map-section {
-            padding: 60px 0;
-            background-color: #f8f9fa;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .section-header h2 {
-            font-weight: 700;
+        .chart-header h4 {
+            margin: 0;
             color: var(--dark);
+            font-weight: 600;
         }
 
-        .section-header p {
-            color: var(--gray);
+        /* =====================
+           TESTIMONIAL SECTION
+        ===================== */
+        .testimonial-section {
+            background-color: #f1f5f9;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
         }
 
-        .speaker-section {
-            padding: 60px 0;
+        .testimonial-section::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.1) 0%, rgba(249, 115, 22, 0) 70%);
+            z-index: 0;
         }
 
-        .speaker-section .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
+        .testimonial-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            height: 100%;
+            position: relative;
+            z-index: 1;
         }
 
-        .speaker-section .card:hover {
-            transform: translateY(-5px);
+        .testimonial-card::before {
+            content: '\201C';
+            font-family: Georgia, serif;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 5rem;
+            color: rgba(79, 70, 229, 0.1);
+            z-index: -1;
         }
 
-        .speaker-section .card-img-top {
-            height: 200px;
-            object-fit: cover;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
         }
 
-        .speaker-section .social-links {
-            font-size: 1.2rem;
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
         }
 
-        #event-map {
-            height: 500px;
+        .testimonial-author {
+            font-weight: 600;
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        .testimonial-author::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--secondary);
+        }
+
+       /* =====================
+        FOOTER
+===================== */
+footer {
+    background-color: white;
+    color: #333; /* Changed from white to dark for visibility */
+    padding: 80px 0 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, var(--primary), var(--secondary));
+}
+
+footer h4, footer h5 {
+    color: var(--primary); /* Use brand color instead of white */
+    margin-bottom: 25px;
+    position: relative;
+    display: inline-block;
+}
+
+footer h4::after, footer h5::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background-color: var(--primary); /* Brand-colored underline */
+}
+
+.footer-links a {
+    color: var(--gray-dark); /* Changed to darker color for visibility */
+    transition: var(--transition);
+    display: block;
+    margin-bottom: 10px;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+    transform: translateX(5px);
+}
+
+.social-icons a {
+    color: var(--gray-dark); /* Visible social icons */
+    font-size: 1.5rem;
+    margin-right: 15px;
+    transition: var(--transition);
+    display: inline-block;
+}
+
+.social-icons a:hover {
+    color: var(--secondary);
+    transform: translateY(-5px);
+}
+
+footer ul li {
+    margin-bottom: 10px;
+    color: #444; /* Ensure list text is visible */
+}
+
+footer ul li i {
+    margin-right: 10px;
+    color: var(--primary-light);
+}
+
+.newsletter-form .form-control {
+    background-color: #f8f9fa;
+    border: 1px solid #ccc;
+    color: #333;
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+}
+
+.newsletter-form .form-control:focus {
+    box-shadow: none;
+    background-color: white;
+}
+
+.newsletter-form .btn {
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.newsletter-form .btn:hover {
+    background-color: var(--secondary);
+    border-color: var(--secondary);
+}
+
+.copyright {
+    padding-top: 20px;
+    margin-top: 40px;
+    border-top: 1px solid #ccc;
+    color: #555;
+}
+
+
+        /* =====================
+           RESPONSIVE STYLES
+        ===================== */
+        @media (max-width: 991px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .btn-hero {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+
+            .section-padding {
+                padding: 4rem 0;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-section {
+                padding: 150px 0 80px;
+            }
+
+            .btn-hero {
+                margin-bottom: 10px;
+            }
+
+            .section-padding {
+                padding: 3rem 0;
+            }
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-card {
+                padding: 20px;
+            }
+
+            .stat-value {
+                font-size: 2rem;
+            }
+        }
+
+        /* =====================
+           UTILITY CLASSES
+        ===================== */
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
+        .text-secondary {
+            color: var(--secondary) !important;
+        }
+
+        .bg-primary {
+            background-color: var(--primary) !important;
+        }
+
+        .bg-secondary {
+            background-color: var(--secondary) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--secondary-dark);
+            border-color: var(--secondary-dark);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-outline-secondary {
+            color: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            background-color: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .preloader.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* Back to top button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 999;
+            box-shadow: var(--shadow);
+        }
+
+        .back-to-top.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
         }
     </style>
 </head>
 <body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="loader"></div>
+    </div>
+
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">OEMS</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -273,9 +1045,9 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section" id="home">
         <div class="container">
-            <h1 class="hero-title">Plan. Attend. Connect.</h1>
+            <h1 class="hero-title">Welcome To Online Event Management System (OEMS)</h1>
             <p class="hero-subtitle">Manage Your Events Seamlessly</p>
             <div class="hero-buttons">
                 <a href="/participant-form/" class="btn btn-outline-light btn-hero">Register Now</a>
@@ -285,11 +1057,15 @@
     </section>
 
     <!-- Quick Access Cards -->
-    <section class="card-section">
+    <section class="card-section" id="features">
         <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Our Features</h2>
+                <p>Everything you need to manage successful events</p>
+            </div>
             <div class="row">
                 <!-- Events Card -->
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
                     <div class="card h-100 text-center p-4">
                         <i class="fas fa-calendar-alt card-icon"></i>
                         <h3 class="card-title">Events</h3>
@@ -305,7 +1081,7 @@
                 </div>
 
                 <!-- Upcoming Events Card -->
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
                     <div class="card h-100 text-center p-4">
                         <i class="fas fa-clock card-icon"></i>
                         <h3 class="card-title">Upcoming Events</h3>
@@ -323,7 +1099,7 @@
                 </div>
 
                 <!-- Speakers Card -->
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
                     <div class="card h-100 text-center p-4">
                         <i class="fas fa-microphone card-icon"></i>
                         <h3 class="card-title">Speakers</h3>
@@ -341,257 +1117,246 @@
     <!-- Interactive Map Section -->
     <section class="map-section" id="map-section">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header" data-aos="fade-up">
                 <h2>Event Locations in Rwanda</h2>
                 <p>Explore upcoming events across the country</p>
             </div>
             <!-- Static Google Maps Embed -->
-            <iframe 
-                id="event-map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.634234381496!2d30.061208315331455!3d-1.940353998713196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca76b4418c245%3A0x1b9e49a93d548f3f!2sKigali%20Convention%20Centre!5e0!3m2!1sen!2srw!4v1620000000000!5m2!1sen!2srw"
-                width="100%" 
-                height="500" 
-                style="border:0; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
-                allowfullscreen="" 
-                loading="lazy">
-            </iframe>
+            <div data-aos="zoom-in">
+                <iframe 
+                    id="event-map"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3987.634234381496!2d30.061208315331455!3d-1.940353998713196!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x19dca76b4418c245%3A0x1b9e49a93d548f3f!2sKigali%20Convention%20Centre!5e0!3m2!1sen!2srw!4v1620000000000!5m2!1sen!2srw"
+                    width="100%" 
+                    height="500" 
+                    style="border:0; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
+                    allowfullscreen="" 
+                    loading="lazy">
+                </iframe>
+            </div>
         </div>
     </section>
 
     <!-- New Speaker Announcements Section -->
     <section class="speaker-section" id="speaker-section">
         <div class="container">
-            <div class="section-header">
+            <div class="section-header" data-aos="fade-up">
                 <h2>New Speaker Announcements</h2>
                 <p>Meet our latest speakers and their upcoming events</p>
             </div>
-            <div class="row" id="new-speakers-list">
-                <!-- Dynamic content will be loaded here -->
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
+            <div class="row">
+                <!-- Speaker 1 -->
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="speaker-card">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" class="card-img-top" alt="Speaker">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-1">KAMANA Uwase</h5>
+                            <p class="text-muted mb-3">Developer & Systems Analyst</p>
+                            <p class="card-text">Presenting on Event Management Systems on 12/08/2025 at URL CST.</p>
+                            <div class="social-links mt-3">
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Speaker 2 -->
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="speaker-card">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" class="card-img-top" alt="Speaker">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-1">SHIMIRWA Eric</h5>
+                            <p class="text-muted mb-3">Data Analyst & Excel Expert</p>
+                            <p class="card-text">Leading Advanced Excel Masterclass on 12/09/2025 at KIMIRONKO.</p>
+                            <div class="social-links mt-3">
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Speaker 3 -->
+                <div class="col-lg-4 col-md-6 mb-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="speaker-card">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" class="card-img-top" alt="Speaker">
+                        <div class="card-body text-center">
+                            <h5 class="card-title mb-1">UWASE Marie</h5>
+                            <p class="text-muted mb-3">Marketing Specialist</p>
+                            <p class="card-text">Hosting Digital Marketing Workshop on 15/09/2025 at Kigali Heights.</p>
+                            <div class="social-links mt-3">
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-github"></i></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Analytics Section (Admin Only) -->
+    <!-- Analytics Section (Admin Only) - Simplified -->
     <section class="analytics-section" id="analytics-section">
         <div class="container">
-            <div class="analytics-header">
+            <div class="section-header" data-aos="fade-up">
                 <h2>System Analytics</h2>
                 <p>Comprehensive insights and statistics for administrators</p>
             </div>
 
             <!-- Quick Stats -->
             <div class="analytics-grid">
-                <div class="stat-card">
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
                     <i class="fas fa-calendar-alt fa-2x"></i>
-                    <div class="stat-value" id="event-count">0</div>
+                    <div class="stat-value" id="event-count">48</div>
                     <div class="stat-label">Total Events</div>
                     <a href="/event-count/" class="btn btn-sm btn-outline-primary mt-2">Details</a>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
                     <i class="fas fa-users fa-2x"></i>
-                    <div class="stat-value" id="participant-count">0</div>
+                    <div class="stat-value" id="participant-count">1,254</div>
                     <div class="stat-label">Total Participants</div>
                     <a href="/analytics/participant-stats/" class="btn btn-sm btn-outline-primary mt-2">Details</a>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="300">
                     <i class="fas fa-dollar-sign fa-2x"></i>
-                    <div class="stat-value" id="total-revenue">$0</div>
+                    <div class="stat-value" id="total-revenue">$125,750</div>
                     <div class="stat-label">Total Revenue</div>
                     <a href="/analytics/event-stats/" class="btn btn-sm btn-outline-primary mt-2">Details</a>
                 </div>
-                <div class="stat-card">
+                <div class="stat-card" data-aos="fade-up" data-aos-delay="400">
                     <i class="fas fa-tag fa-2x"></i>
-                    <div class="stat-value" id="avg-price">$0</div>
+                    <div class="stat-value" id="avg-price">$149</div>
                     <div class="stat-label">Avg. Event Price</div>
                     <a href="/analytics/average-price/" class="btn btn-sm btn-outline-primary mt-2">Details</a>
                 </div>
             </div>
-
-            <!-- Charts Row 1 -->
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h4>Revenue Over Time</h4>
-                            <a href="/api/dashboard/revenue/" class="btn btn-sm btn-outline-primary">View Data</a>
-                        </div>
-                        <canvas id="revenueChart"></canvas>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h4>Events by Category</h4>
-                            <a href="/api/dashboard/categories/" class="btn btn-sm btn-outline-primary">View Data</a>
-                        </div>
-                        <canvas id="categoryChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Charts Row 2 -->
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h4>Participant Distribution</h4>
-                            <a href="/analytics/participant-stats/" class="btn btn-sm btn-outline-primary">View Data</a>
-                        </div>
-                        <canvas id="participantChart"></canvas>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="chart-container">
-                        <div class="chart-header">
-                            <h4>Payment Status</h4>
-                            <a href="/analytics/event-stats/" class="btn btn-sm btn-outline-primary">View Data</a>
-                        </div>
-                        <canvas id="paymentChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Events Section -->
-            <div class="chart-container">
-                <div class="chart-header">
-                    <h4>Top Revenue Events</h4>
-                    <a href="/analytics/top-revenue/" class="btn btn-sm btn-outline-primary">View All</a>
-                </div>
-                <canvas id="topEventsChart"></canvas>
-            </div>
+           
         </div>
     </section>
 
     <!-- Testimonials Section -->
-    <section class="testimonial-section">
+    <section class="testimonial-section" id="testimonials">
         <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <h2>Speaker Announcements</h2>
+                <p>Upcoming presentations and workshops</p>
+            </div>
             <div class="row">
-                <div class="col-md-6">
-                    <div class="testimonial-card">
+                <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="testimonial-card h-100">
                         <div class="testimonial-text">
+                            We are excited to announce that KAMANA Uwase, a passionate developer and systems analyst, will be speaking at our upcoming presentation on the Event Management System!
 
-We are excited to announce that KAMANA Uwase, a passionate developer and systems analyst, will be speaking at our upcoming presentation on the Event Management System!
+                            Join us as we unveil a powerful digital solution designed to revolutionize the way events are planned, organized, and executed. This system offers seamless management of events, speakers, participants, schedules, and payments – all in one platform.
 
-Join us as we unveil a powerful digital solution designed to revolutionize the way events are planned, organized, and executed. This system offers seamless management of events, speakers, participants, schedules, and payments – all in one platform.
+                            📅 Date: 12/08/2025
+                            🕒 Time: 09:40
+                            📍 Location: URL CST
 
-📅 Date: 12/08/2025
-🕒 Time:09:40
-📍 Location:URL CST
+                            During the session, KAMANA Uwase will walk us through the system's features, demonstrate its real-time capabilities, and share insights into its development and impact.
 
-During the session, KAMANA Uwase  will walk us through the system's features, demonstrate its real-time capabilities, and share insights into its development and impact.
-
-Whether you're an event organizer, tech enthusiast, or simply curious about how modern systems are transforming operations – this is a session you won't want to miss!
-
-🎟️ Don't miss out – come and see how technology meets event success!"</div>
+                            Whether you're an event organizer, tech enthusiast, or simply curious about how modern systems are transforming operations – this is a session you won't want to miss!
+                        </div>
                         <div class="testimonial-author">KAMANA Uwase</div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="testimonial-card">
+                <div class="col-md-6 mb-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="testimonial-card h-100">
                         <div class="testimonial-text">
                             🎤 Speaker Announcement – Advanced Excel Masterclass 🔍📊
 
-We are thrilled to announce our keynote speaker for the upcoming Advanced Excel Training Event ,SHIMIRWA Eric a seasoned data analyst and Microsoft Excel expert with over [X] years of experience in data modeling, dashboard creation, and Excel automation!
+                            We are thrilled to announce our keynote speaker for the upcoming Advanced Excel Training Event, SHIMIRWA Eric a seasoned data analyst and Microsoft Excel expert with over 10 years of experience in data modeling, dashboard creation, and Excel automation!
 
-🗓️ Date:12/09/2025
-📍 Location: KIMIRONKO
-⏰ Time:14:30 PM
+                            🗓️ Date: 12/09/2025
+                            📍 Location: KIMIRONKO
+                            ⏰ Time: 14:30 PM
 
-About the Speaker:
-SHIMIRWA Eric has worked with leading organizations to optimize reporting, streamline operations, and unlock the full power of Microsoft Excel through advanced features like PivotTables, Power Query, VBA macros, and dynamic dashboards. Their passion for teaching and simplifying complex tools makes this a session you don't want to miss!
+                            About the Speaker:
+                            SHIMIRWA Eric has worked with leading organizations to optimize reporting, streamline operations, and unlock the full power of Microsoft Excel through advanced features like PivotTables, Power Query, VBA macros, and dynamic dashboards. Their passion for teaching and simplifying complex tools makes this a session you don't want to miss!
 
-✨ Topics to be covered include:
-
-Power Query & Power Pivot
-
-Advanced functions & formulas (INDEX-MATCH, XLOOKUP, etc.)
-
-Creating dynamic dashboards
-
-Automating tasks using VBA
-
-Real-world case studies & hands-on exercises
-
-📌 Register now and elevate your Excel skills to the next level!
-
-#AdvancedExcel #ExcelTraining #DataSkills #ProductivityBoost #ExcelMasterclass
-</div>
+                            ✨ Topics to be covered include:
+                            - Power Query & Power Pivot
+                            - Advanced functions & formulas (INDEX-MATCH, XLOOKUP, etc.)
+                            - Creating dynamic dashboards
+                            - Automating tasks using VBA
+                            - Real-world case studies & hands-on exercises
+                        </div>
                         <div class="testimonial-author">SHIMIRWA Eric</div>
                     </div>
                 </div>
             </div>
             
-            <!-- Simple Event Gallery Link -->
-            <div class="text-center mt-5">
-                <a href="/event_image/" class="btn btn-outline-primary">
-                    <i class="fas fa-images me-2"></i>Event Gallery
+            <!-- Event Gallery Link -->
+            <div class="text-center mt-5" data-aos="fade-up" data-aos-delay="300">
+                <a href="/event_image/" class="btn btn-primary btn-lg">
+                    <i class="fas fa-images me-2"></i>View Event Gallery
                 </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-light py-5 border-top">
+    <footer>
         <div class="container">
             <div class="row g-4">
                 <!-- About Section -->
-                <div class="col-lg-4">
-                    <h4 class="text-uppercase mb-4 text-primary">OEMS</h4>
+                <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <h4>OEMS</h4>
                     <p class="text-muted">
                         Your premier event management solution. We specialize in creating unforgettable experiences 
                         through seamless event planning and execution.
                     </p>
                     <div class="social-icons mt-4">
-                        <a href="https://www.linkedin.com/in/asaph-chiefofproductdesignandengineering/" class="text-secondary me-3"><i class="fab fa-facebook-f"></i></a>
-                        <a href="https://www.linkedin.com/in/asaph-chiefofproductdesignandengineering/" class="text-secondary me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.linkedin.com/in/asaph-chiefofproductdesignandengineering/" class="text-secondary me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.linkedin.com/in/asaph-chiefofproductdesignandengineering/" class="text-secondary me-3"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
 
                 <!-- Quick Links -->
-                <div class="col-lg-2 col-md-6">
-                    <h5 class="text-uppercase mb-4 text-primary">Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="/" class="text-secondary text-decoration-none">Home</a></li>
-                        <li class="mb-2"><a href="/events/" class="text-secondary text-decoration-none">Events</a></li>
-                        <li class="mb-2"><a href="/speakers/" class="text-secondary text-decoration-none">Speakers</a></li>
-                        <li class="mb-2"><a href="/schedule/" class="text-secondary text-decoration-none">Schedule</a></li>
-                        <li class="mb-2"><a href="/contact/" class="text-secondary text-decoration-none">Contact</a></li>
+                <div class="col-lg-2 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/events/">Events</a></li>
+                        <li><a href="/speakers/">Speakers</a></li>
+                        <li><a href="/schedule/">Schedule</a></li>
+                        <li><a href="/contact/">Contact</a></li>
                     </ul>
                 </div>
 
                 <!-- Contact Info -->
-                <div class="col-lg-3 col-md-6">
-                    <h5 class="text-uppercase mb-4 text-primary">Contact Us</h5>
+                <div class="col-lg-3 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                    <h5>Contact Us</h5>
                     <ul class="list-unstyled text-muted">
-                        <li class="mb-2">
-                            <i class="fas fa-map-marker-alt me-2 text-primary"></i>
+                        <li>
+                            <i class="fas fa-map-marker-alt"></i>
                             123 Event Street, Kigali, Rwanda
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-phone me-2 text-primary"></i>
+                        <li>
+                            <i class="fas fa-phone"></i>
                             +250 788 123 456
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-envelope me-2 text-primary"></i>
+                        <li>
+                            <i class="fas fa-envelope"></i>
                             info@oems.com
                         </li>
-                        <li class="mb-2">
-                            <i class="fas fa-clock me-2 text-primary"></i>
+                        <li>
+                            <i class="fas fa-clock"></i>
                             Mon-Fri: 9AM - 5PM
                         </li>
                     </ul>
                 </div>
 
                 <!-- Newsletter -->
-                <div class="col-lg-3">
-                    <h5 class="text-uppercase mb-4 text-primary">Newsletter</h5>
+                <div class="col-lg-3" data-aos="fade-up" data-aos-delay="400">
+                    <h5>Newsletter</h5>
                     <p class="text-muted">Subscribe to get updates on upcoming events</p>
-                    <form class="mb-3">
+                    <form class="newsletter-form mb-3">
                         <div class="input-group">
                             <input type="email" class="form-control" placeholder="Your Email" aria-label="Your Email">
                             <button class="btn btn-primary" type="submit">
@@ -604,10 +1369,150 @@ Real-world case studies & hands-on exercises
             </div>
 
             <!-- Copyright -->
-            <div class="border-top mt-4 pt-4 text-center text-muted">
-                <p class="mb-0">&copy; 2025 OEMS. All rights reserved.</p>
+            <div class="copyright text-center">
+                <p>&copy; 2025 OEMS. All rights reserved.</p>
             </div>
         </div>
     </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        // Initialize AOS
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize AOS
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true,
+                mirror: false
+            });
+
+            // Preloader
+            setTimeout(function() {
+                document.querySelector('.preloader').classList.add('fade-out');
+            }, 1000);
+
+            // Navbar scroll effect
+            const navbar = document.querySelector('.navbar');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            });
+
+            // Back to top button
+            const backToTopButton = document.querySelector('.back-to-top');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 300) {
+                    backToTopButton.classList.add('active');
+                } else {
+                    backToTopButton.classList.remove('active');
+                }
+            });
+
+            backToTopButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Initialize Revenue Chart (simplified)
+           
+            // Simulate loading upcoming events
+            setTimeout(function() {
+                const upcomingEventsList = document.getElementById('upcoming-events-list');
+                if (upcomingEventsList) {
+                    upcomingEventsList.innerHTML = `
+                        <div class="text-start">
+                            <div class="mb-2">
+                                <strong>Tech Conference</strong>
+                                <div class="small text-muted">Oct 15, 2025</div>
+                            </div>
+                            <div class="mb-2">
+                                <strong>Web Dev Workshop</strong>
+                                <div class="small text-muted">Sep 28, 2025</div>
+                            </div>
+                            <div class="mb-2">
+                                <strong>Marketing Seminar</strong>
+                                <div class="small text-muted">Oct 5, 2025</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }, 1500);
+
+            // Check if user is admin (for demo purposes)
+            const isAdmin = localStorage.getItem('isAdmin') === 'true';
+            if (isAdmin) {
+                document.getElementById('dashboard-btn').style.display = 'inline-block';
+                document.getElementById('add-speaker-btn').style.display = 'inline-block';
+                document.getElementById('analytics-section').style.display = 'block';
+            }
+
+            // Add counter animation to stat values
+            const statValues = document.querySelectorAll('.stat-value');
+            statValues.forEach(stat => {
+                const value = stat.textContent;
+                stat.textContent = '0';
+                
+                // Only run counter if element is visible (for admin section)
+                if (stat.offsetParent !== null) {
+                    setTimeout(() => {
+                        animateCounter(stat, value);
+                    }, 500);
+                }
+            });
+
+            function animateCounter(element, targetValue) {
+                // Remove any non-numeric characters for calculation
+                const numericValue = parseFloat(targetValue.replace(/[^0-9.-]+/g, ''));
+                const prefix = targetValue.includes('$') ? '$' : '';
+                const suffix = '';
+                const duration = 2000; // 2 seconds
+                const frameRate = 60;
+                const totalFrames = duration / (1000 / frameRate);
+                let frame = 0;
+                
+                const counter = setInterval(() => {
+                    frame++;
+                    const progress = frame / totalFrames;
+                    const currentValue = Math.round(numericValue * progress);
+                    
+                    element.textContent = `${prefix}${currentValue.toLocaleString()}${suffix}`;
+                    
+                    if (frame === totalFrames) {
+                        clearInterval(counter);
+                        element.textContent = targetValue; // Ensure final value is exactly as specified
+                    }
+                }, 1000 / frameRate);
+            }
+        });
+    </script>
 </body>
 </html>

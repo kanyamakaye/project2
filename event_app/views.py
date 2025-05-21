@@ -5,7 +5,6 @@ from django.template import loader
 from django.db.models import Count, Sum, Avg, Min, Max
 from django.utils import timezone
 from datetime import timedelta, datetime
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import (
     EventManagementForm, SpeakerManagementForm, ParticipantManagementForm,
@@ -46,7 +45,6 @@ def json_view(request):
                 Schedule_management.objects.values(), Payment.objects.values())
     return JsonResponse(data, safe=False)
 
-
 def home(request):
     try:
         # Get upcoming events
@@ -58,7 +56,7 @@ def home(request):
         free_events = Event_management.objects.filter(
             is_paid=False,
             start_date__gte=timezone.now()
-        ).select_related('category').prefetch_related('speaker_management_set')[:3]
+        ).select_related('category').prefetch_related( 'speaker_management_set')[:3]
 
         # Get event statistics
         total_events = Event_management.objects.count()
@@ -76,8 +74,7 @@ def home(request):
     except Exception as e:
         logger.error(f"Error in home view: {str(e)}")
         return render(request, 'home.html', {'error': 'An error occurred while loading the page.'})
-
-
+@login_required
 def events_list(request):
     events = Event_management.objects.all()
     return render(request, 'event.html', {'events': events})
