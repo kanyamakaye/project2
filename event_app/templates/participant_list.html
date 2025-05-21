@@ -6,7 +6,7 @@
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="card-title mb-0">Participant Management</h1>
+                <h1 class="card-title mb-0">Participant's List</h1>
             </div>
 
             <!-- Statistics Card -->
@@ -30,7 +30,7 @@
                     <span class="input-group-text bg-white">
                         <i class="fas fa-search text-muted"></i>
                     </span>
-                    <input type="text" id="participantSearch" class="form-control" placeholder="Search by name, email,phone,sex,university or Event">
+                    <input type="text" id="participantSearch" class="form-control" placeholder="Search by name, email, phone, sex, university, or event">
                 </div>
             </div>
 
@@ -44,7 +44,7 @@
                             <th>Email</th>
                             <th>Phone</th>
                             <th>Sex</th>
-                            <th>university</th>
+                            <th>University</th>
                             <th>Event</th>
                         </tr>
                     </thead>
@@ -61,7 +61,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="5" class="text-center py-4">
+                            <td colspan="7" class="text-center py-4">
                                 <div class="text-muted">
                                     <i class="fas fa-info-circle me-2"></i>No participants found.
                                 </div>
@@ -74,36 +74,31 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
-<!-- Add this to your base template if not already included -->
 {% block extra_js %}
 <script>
-    // Simple client-side search functionality
-    document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced client-side search: filters all columns
+    document.addEventListener('DOMContentLoaded', function () {
         const searchInput = document.getElementById('participantSearch');
         const table = document.getElementById('participantTable');
         const rows = table.getElementsByTagName('tr');
 
-        searchInput.addEventListener('keyup', function() {
+        searchInput.addEventListener('keyup', function () {
             const query = searchInput.value.toLowerCase();
-            
-            // Start from index 1 to skip the header row
+
+            // Skip header row (index 0)
             for (let i = 1; i < rows.length; i++) {
                 const row = rows[i];
-                if (row.cells.length < 3) continue; // Skip empty state row
-                
-                const name = row.cells[1].textContent.toLowerCase();
-                const email = row.cells[2].textContent.toLowerCase();
-                const phone = row.cells[3].textContent.toLowerCase();
-                
-                if (name.includes(query) || email.includes(query) || phone.includes(query)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                if (row.cells.length < 7) continue; // Skip empty message row
+
+                const match = Array.from(row.cells).some(cell =>
+                    cell.textContent.toLowerCase().includes(query)
+                );
+
+                row.style.display = match ? '' : 'none';
             }
         });
     });
 </script>
-{% endblock %}
 {% endblock %}

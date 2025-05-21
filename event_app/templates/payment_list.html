@@ -1,30 +1,241 @@
-{% extends 'base.html' %}
-{% block content %}
-<h2>Payment Details</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Participant</th>
-            <th>Event</th>
-            <th>Amount</th>
-            <th>Method</th>
-            <th>Status</th>
-            <th>Date</th>
-            <th>Transaction ID</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for payment in payments %}
-        <tr>
-            <td>{{ payment.participant }}</td>
-            <td>{{ payment.event }}</td>
-            <td>{{ payment.amount_paid }}</td>
-            <td>{{ payment.get_payment_method_display }}</td>
-            <td>{{ payment.get_payment_status_display }}</td>
-            <td>{{ payment.payment_date }}</td>
-            <td>{{ payment.transaction_id }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>All Payments</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-bg: #f4f4f4;
+            --card-bg: #fff;
+            --text-dark: #333;
+            --text-muted: #666;
+            --border-color: #ddd;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--light-bg);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+
+        .stats-section {
+            margin-bottom: 30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .payments-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .payments-table th,
+        .payments-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color); /* vertical borders */
+        }
+
+        .payments-table th:last-child,
+        .payments-table td:last-child {
+            border-right: none; /* no border on last column */
+        }
+
+        .payments-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        .payments-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .payments-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .status-paid {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .status-pending {
+            background-color: var(--warning-color);
+            color: #333;
+        }
+
+        .status-failed {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .no-data-message {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Highlight recent payment */
+        .recent-payment {
+            background-color: #e6ffe6 !important;
+        }
+
+        @media (max-width: 768px) {
+            .payments-table th,
+            .payments-table td {
+                padding: 8px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>All Payments</h1>
+    </header>
+
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">${{ payment_stats.total_amount|floatformat:2 }}</div>
+                <div class="stat-label">Total Amount</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ payment_stats.total_payments }}</div>
+                <div class="stat-label">Total Payments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ payment_stats.paid_count }}</div>
+                <div class="stat-label">Paid</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ payment_stats.pending_count }}</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">{{ payment_stats.failed_count }}</div>
+                <div class="stat-label">Failed</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="payments-section">
+        {% if payments %}
+            <div class="table-responsive">
+                <table class="payments-table">
+                    <thead>
+                    <tr>
+                        <th>Event</th>
+                        <th>Participant</th>
+                        <th>Amount</th>
+                        <th>Payment Date</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for payment in payments %}
+                        <tr class="{% if payment.payment_date >= recent_threshold %}recent-payment{% endif %}">
+                            <td>{{ payment.event.title }}</td>
+                            <td>{{ payment.participant.name }}</td>
+                            <td>${{ payment.amount|floatformat:2 }}</td>
+                            <td>{{ payment.payment_date|date:"M d, Y" }}</td>
+                            <td>
+                                <span class="status status-{{ payment.payment_status|lower }}">
+                                    {% if payment.payment_status == "Paid" %}✅{% elif payment.payment_status == "Pending" %}⏳{% else %}❌{% endif %}
+                                    {{ payment.payment_status }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="no-data-message">No payments found.</p>
+        {% endif %}
+    </section>
+</div>
+</body>
+</html>

@@ -6,7 +6,6 @@
     <title>Schedule Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --primary: #4f46e5;
@@ -407,128 +406,6 @@
             background-color: rgba(255, 255, 255, 0.5);
         }
 
-        /* Analytics section */
-        .analytics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .analytics-card {
-            background-color: white;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .analytics-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-        }
-
-        .analytics-header {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid var(--gray-200);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .analytics-title {
-            font-size: 1rem;
-            font-weight: 600;
-            color: var(--gray-800);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .analytics-body {
-            padding: 1.5rem;
-            height: 300px;
-            position: relative;
-        }
-
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-
-        .analytics-summary {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--gray-200);
-        }
-
-        .summary-item {
-            text-align: center;
-        }
-
-        .summary-value {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .summary-label {
-            font-size: 0.75rem;
-            color: var(--gray-500);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .tab-container {
-            display: flex;
-            border-bottom: 1px solid var(--gray-200);
-            margin-bottom: 1rem;
-        }
-
-        .tab {
-            padding: 0.75rem 1.25rem;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--gray-600);
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            transition: var(--transition);
-        }
-
-        .tab.active {
-            color: var(--primary);
-            border-bottom-color: var(--primary);
-        }
-
-        .tab:hover:not(.active) {
-            color: var(--gray-800);
-            border-bottom-color: var(--gray-300);
-        }
-
-        .legend-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            margin-top: 1rem;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.75rem;
-            color: var(--gray-700);
-        }
-
-        .legend-color {
-            width: 0.75rem;
-            height: 0.75rem;
-            border-radius: 2px;
-        }
-
         @media (max-width: 768px) {
             .header-content {
                 flex-direction: column;
@@ -551,10 +428,6 @@
 
             .topic-cell {
                 max-width: 150px;
-            }
-
-            .analytics-grid {
-                grid-template-columns: 1fr;
             }
         }
 
@@ -587,66 +460,13 @@
             <div class="header-content">
                 <h1>Schedule Management</h1>
                 <a href="" class="add-button">
-                    <i class="fas fa-plus"></i> Add New Schedule
+                    <i class="fas fa-plus"></i>
                 </a>
             </div>
         </div>
     </header>
 
     <div class="container">
-        <!-- Analytics Section -->
-        <div class="analytics-grid">
-            <div class="analytics-card">
-                <div class="analytics-header">
-                    <h3 class="analytics-title">
-                        <i class="fas fa-chart-bar" style="color: var(--primary);"></i>
-                        Events by Day
-                    </h3>
-                    <div class="tab-container">
-                        <div class="tab active" onclick="switchTimeframe('day')">Day</div>
-                        <div class="tab" onclick="switchTimeframe('week')">Week</div>
-                        <div class="tab" onclick="switchTimeframe('month')">Month</div>
-                    </div>
-                </div>
-                <div class="analytics-body">
-                    <div class="chart-container">
-                        <canvas id="eventsChart"></canvas>
-                    </div>
-                    <div class="analytics-summary">
-                        <div class="summary-item">
-                            <div class="summary-value" id="totalEvents">0</div>
-                            <div class="summary-label">Total Events</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-value" id="avgEventsPerDay">0</div>
-                            <div class="summary-label">Avg. Per Day</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="summary-value" id="peakDay">-</div>
-                            <div class="summary-label">Peak Day</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="analytics-card">
-                <div class="analytics-header">
-                    <h3 class="analytics-title">
-                        <i class="fas fa-chart-pie" style="color: var(--accent);"></i>
-                        Events by Speaker
-                    </h3>
-                </div>
-                <div class="analytics-body">
-                    <div class="chart-container">
-                        <canvas id="speakersChart"></canvas>
-                    </div>
-                    <div class="legend-container" id="speakersLegend">
-                        <!-- Legend items will be added dynamically -->
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">Event Schedule</h2>
@@ -733,7 +553,7 @@
                                         </div>
                                         <p class="empty-state-text">No schedules found</p>
                                         <a href="/schedule/forms" class="add-button">
-                                            <i class="fas fa-plus"></i> Add Your First Schedule
+                                            <i class="fas fa-plus"></i> 
                                         </a>
                                     </div>
                                 </td>
@@ -785,12 +605,6 @@
             const month = String(date.getMonth() + 1).padStart(2, '0');
             const day = String(date.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
-        }
-
-        // Format date for display (e.g., "Jan 15")
-        function formatDateForDisplay(date) {
-            const options = { month: 'short', day: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
         }
 
         // Extract date from a datetime string
@@ -846,9 +660,6 @@
             
             // Re-filter table
             filterTable();
-            
-            // Update charts
-            updateCharts();
         }
 
         function filterTable() {
@@ -926,12 +737,9 @@
                     emptyStateRow.style.display = 'none';
                 }
             }
-            
-            // Update charts based on filtered data
-            updateCharts();
         }
 
-        // Set today as the default start date
+        // Set up the page when it loads
         document.addEventListener('DOMContentLoaded', function() {
             const today = new Date();
             const formattedToday = formatDate(today);
@@ -939,352 +747,7 @@
             // Uncomment to set today as default start date
             // document.getElementById('startDateFilter').value = formattedToday;
             // updateDateBadge();
-            
-            // Initialize charts
-            initCharts();
         });
-        
-        // Chart variables
-        let eventsChart = null;
-        let speakersChart = null;
-        let currentTimeframe = 'day';
-        
-        // Initialize charts
-        function initCharts() {
-            // Set up charts with initial data
-            setupEventsChart();
-            setupSpeakersChart();
-            
-            // Update summary statistics
-            updateSummaryStats();
-        }
-        
-        // Set up events by day chart
-        function setupEventsChart() {
-            const ctx = document.getElementById('eventsChart').getContext('2d');
-            
-            // Get data for chart
-            const { labels, data } = getEventsChartData();
-            
-            // Create gradient for bar chart
-            const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-            gradient.addColorStop(0, 'rgba(79, 70, 229, 0.8)');
-            gradient.addColorStop(1, 'rgba(79, 70, 229, 0.2)');
-            
-            // Create chart
-            eventsChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Number of Events',
-                        data: data,
-                        backgroundColor: gradient,
-                        borderColor: 'rgba(79, 70, 229, 1)',
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        barThickness: 'flex',
-                        maxBarThickness: 35
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                            titleColor: '#1f2937',
-                            bodyColor: '#4b5563',
-                            borderColor: '#e5e7eb',
-                            borderWidth: 1,
-                            padding: 12,
-                            boxPadding: 6,
-                            usePointStyle: true,
-                            callbacks: {
-                                title: function(tooltipItems) {
-                                    return tooltipItems[0].label;
-                                },
-                                label: function(context) {
-                                    const value = context.raw;
-                                    return `${value} event${value !== 1 ? 's' : ''}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#6b7280'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: '#e5e7eb'
-                            },
-                            ticks: {
-                                precision: 0,
-                                color: '#6b7280'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-        
-        // Set up speakers chart
-        function setupSpeakersChart() {
-            const ctx = document.getElementById('speakersChart').getContext('2d');
-            
-            // Get data for chart
-            const { labels, data, colors } = getSpeakersChartData();
-            
-            // Create chart
-            speakersChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                        backgroundColor: colors,
-                        borderColor: 'white',
-                        borderWidth: 2,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '65%',
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                            titleColor: '#1f2937',
-                            bodyColor: '#4b5563',
-                            borderColor: '#e5e7eb',
-                            borderWidth: 1,
-                            padding: 12,
-                            boxPadding: 6,
-                            usePointStyle: true,
-                            callbacks: {
-                                label: function(context) {
-                                    const value = context.raw;
-                                    const total = context.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    const percentage = Math.round((value / total) * 100);
-                                    return `${context.label}: ${value} event${value !== 1 ? 's' : ''} (${percentage}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-            
-            // Create legend
-            createSpeakersLegend(labels, colors);
-        }
-        
-        // Create custom legend for speakers chart
-        function createSpeakersLegend(labels, colors) {
-            const legendContainer = document.getElementById('speakersLegend');
-            legendContainer.innerHTML = '';
-            
-            labels.forEach((label, index) => {
-                const legendItem = document.createElement('div');
-                legendItem.className = 'legend-item';
-                
-                const colorBox = document.createElement('div');
-                colorBox.className = 'legend-color';
-                colorBox.style.backgroundColor = colors[index];
-                
-                const labelText = document.createElement('span');
-                labelText.textContent = label;
-                
-                legendItem.appendChild(colorBox);
-                legendItem.appendChild(labelText);
-                legendContainer.appendChild(legendItem);
-            });
-        }
-        
-        // Get data for events chart based on current timeframe
-        function getEventsChartData() {
-            const table = document.getElementById('scheduleTable');
-            const rows = Array.from(table.querySelectorAll('tbody tr')).filter(row => {
-                return row.style.display !== 'none' && row.cells.length > 1;
-            });
-            
-            // Get date range for chart
-            let startDate, endDate;
-            const startDateFilter = document.getElementById('startDateFilter').value;
-            const endDateFilter = document.getElementById('endDateFilter').value;
-            
-            if (startDateFilter) {
-                startDate = parseDate(startDateFilter);
-            } else {
-                // Default to 7 days ago if no start date
-                startDate = new Date();
-                startDate.setDate(startDate.getDate() - 7);
-            }
-            
-            if (endDateFilter) {
-                endDate = parseDate(endDateFilter);
-            } else {
-                // Default to 7 days from now if no end date
-                endDate = new Date();
-                endDate.setDate(endDate.getDate() + 7);
-            }
-            
-            // Create date range based on timeframe
-            const dates = [];
-            const currentDate = new Date(startDate);
-            
-            while (currentDate <= endDate) {
-                dates.push(new Date(currentDate));
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-            
-            // Count events per date
-            const eventCounts = {};
-            
-            dates.forEach(date => {
-                const dateStr = formatDate(date);
-                eventCounts[dateStr] = 0;
-            });
-            
-            rows.forEach(row => {
-                const dateStr = row.dataset.startDate || extractDateFromDateTime(row.cells[1].textContent);
-                if (dateStr && eventCounts.hasOwnProperty(dateStr)) {
-                    eventCounts[dateStr]++;
-                }
-            });
-            
-            // Format labels based on timeframe
-            const labels = dates.map(date => formatDateForDisplay(date));
-            const data = Object.values(eventCounts);
-            
-            return { labels, data };
-        }
-        
-        // Get data for speakers chart
-        function getSpeakersChartData() {
-            const table = document.getElementById('scheduleTable');
-            const rows = Array.from(table.querySelectorAll('tbody tr')).filter(row => {
-                return row.style.display !== 'none' && row.cells.length > 1;
-            });
-            
-            // Count events per speaker
-            const speakerCounts = {};
-            
-            rows.forEach(row => {
-                const speaker = row.dataset.speaker || 'Unassigned';
-                if (!speakerCounts[speaker]) {
-                    speakerCounts[speaker] = 0;
-                }
-                speakerCounts[speaker]++;
-            });
-            
-            // Sort speakers by count (descending)
-            const sortedSpeakers = Object.entries(speakerCounts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5); // Show top 5 speakers
-            
-            // If there are more than 5 speakers, group the rest as "Others"
-            if (Object.keys(speakerCounts).length > 5) {
-                const otherCount = Object.entries(speakerCounts)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(5)
-                    .reduce((sum, [_, count]) => sum + count, 0);
-                
-                if (otherCount > 0) {
-                    sortedSpeakers.push(['Others', otherCount]);
-                }
-            }
-            
-            const labels = sortedSpeakers.map(([speaker, _]) => speaker);
-            const data = sortedSpeakers.map(([_, count]) => count);
-            
-            // Generate colors for each speaker
-            const colors = [
-                'rgba(79, 70, 229, 0.8)',  // Primary
-                'rgba(139, 92, 246, 0.8)', // Accent
-                'rgba(14, 165, 233, 0.8)', // Secondary
-                'rgba(16, 185, 129, 0.8)', // Success
-                'rgba(245, 158, 11, 0.8)', // Warning
-                'rgba(107, 114, 128, 0.8)' // Gray (for Others)
-            ];
-            
-            return { labels, data, colors };
-        }
-        
-        // Update charts based on filtered data
-        function updateCharts() {
-            if (eventsChart) {
-                const { labels, data } = getEventsChartData();
-                eventsChart.data.labels = labels;
-                eventsChart.data.datasets[0].data = data;
-                eventsChart.update();
-            }
-            
-            if (speakersChart) {
-                const { labels, data, colors } = getSpeakersChartData();
-                speakersChart.data.labels = labels;
-                speakersChart.data.datasets[0].data = data;
-                speakersChart.data.datasets[0].backgroundColor = colors;
-                speakersChart.update();
-                
-                // Update legend
-                createSpeakersLegend(labels, colors);
-            }
-            
-            // Update summary statistics
-            updateSummaryStats();
-        }
-        
-        // Switch timeframe for events chart
-        function switchTimeframe(timeframe) {
-            currentTimeframe = timeframe;
-            
-            // Update active tab
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            // Update chart
-            updateCharts();
-        }
-        
-        // Update summary statistics
-        function updateSummaryStats() {
-            const { data } = getEventsChartData();
-            
-            // Calculate total events
-            const totalEvents = data.reduce((sum, count) => sum + count, 0);
-            document.getElementById('totalEvents').textContent = totalEvents;
-            
-            // Calculate average events per day
-            const avgEvents = data.length > 0 ? (totalEvents / data.length).toFixed(1) : '0';
-            document.getElementById('avgEventsPerDay').textContent = avgEvents;
-            
-            // Find peak day
-            if (data.length > 0) {
-                const maxEvents = Math.max(...data);
-                const maxIndex = data.indexOf(maxEvents);
-                const { labels } = getEventsChartData();
-                const peakDay = maxEvents > 0 ? labels[maxIndex] : '-';
-                document.getElementById('peakDay').textContent = peakDay;
-            } else {
-                document.getElementById('peakDay').textContent = '-';
-            }
-        }
     </script>
 </body>
 </html>

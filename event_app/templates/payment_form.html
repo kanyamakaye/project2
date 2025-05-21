@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
-    /* Payment Form Styles */
+    /* Root Variables */
     :root {
         --primary-color: #4f46e5;
         --primary-hover: #4338ca;
@@ -37,51 +37,76 @@
         --error-color: #ef4444;
         --success-color: #10b981;
     }
-    
-    /* Base styles */
+
+    /* Animations */
+    @keyframes fadeIn {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInUp {
+        0% { opacity: 0; transform: translateY(30px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Container Styles */
     .payment-container {
         font-family: 'Nunito', sans-serif;
         max-width: 600px;
         margin: 0 auto;
         padding: 2rem 1rem;
         color: var(--text-color);
+        animation: fadeIn 0.8s ease-out;
     }
-    
+
     .payment-title {
         font-size: 1.75rem;
         font-weight: 700;
         color: var(--text-color);
         margin-bottom: 1.5rem;
         text-align: center;
+        animation: fadeIn 1s ease-in-out;
     }
-    
+
+    /* Card Styles */
     .payment-card {
         background-color: var(--card-background);
         border-radius: 0.75rem;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+                    0 2px 4px -1px rgba(0, 0, 0, 0.06);
         padding: 2rem;
+        animation: fadeIn 1s ease-in-out;
     }
-    
-    /* Form styles */
+
+    /* Form Styles */
     .payment-form {
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
     }
-    
+
     .form-fields {
         display: flex;
         flex-direction: column;
         gap: 1rem;
     }
-    
-    /* Style Django's form paragraphs */
+
+    /* Animate each form field */
     .payment-form p {
         margin: 0;
         padding: 0;
+        animation: slideInUp 0.5s ease-in-out;
+        animation-fill-mode: both;
     }
-    
-    /* Style form labels */
+
+    .payment-form p:nth-child(1) { animation-delay: 0.1s; }
+    .payment-form p:nth-child(2) { animation-delay: 0.2s; }
+    .payment-form p:nth-child(3) { animation-delay: 0.3s; }
+    .payment-form p:nth-child(4) { animation-delay: 0.4s; }
+    .payment-form p:nth-child(5) { animation-delay: 0.5s; }
+    .payment-form p:nth-child(6) { animation-delay: 0.6s; }
+
+    /* Labels */
     .payment-form label {
         display: block;
         font-weight: 600;
@@ -89,8 +114,8 @@
         color: var(--label-color);
         margin-bottom: 0.375rem;
     }
-    
-    /* Style form inputs */
+
+    /* Inputs */
     .payment-form input[type="text"],
     .payment-form input[type="email"],
     .payment-form input[type="number"],
@@ -105,29 +130,27 @@
         font-size: 1rem;
         color: var(--text-color);
         background-color: #ffffff;
-        transition: border-color 0.2s, box-shadow 0.2s;
+        transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
     }
-    
-    .payment-form input[type="text"]:focus,
-    .payment-form input[type="email"]:focus,
-    .payment-form input[type="number"]:focus,
-    .payment-form input[type="date"]:focus,
+
+    .payment-form input:focus,
     .payment-form select:focus,
     .payment-form textarea:focus {
         outline: none;
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        transform: scale(1.01);
     }
-    
-    /* Style form help text */
+
+    /* Help Text */
     .payment-form .helptext {
         display: block;
         font-size: 0.75rem;
         color: var(--label-color);
         margin-top: 0.25rem;
     }
-    
-    /* Style form errors */
+
+    /* Errors */
     .payment-form .errorlist {
         list-style-type: none;
         padding: 0;
@@ -136,12 +159,12 @@
         font-size: 0.75rem;
         font-weight: 500;
     }
-    
-    /* Button styles */
+
+    /* Button Styles */
     .form-actions {
         margin-top: 1rem;
     }
-    
+
     .payment-button {
         display: block;
         width: 100%;
@@ -154,19 +177,20 @@
         font-size: 1rem;
         font-weight: 600;
         cursor: pointer;
-        transition: background-color 0.2s;
+        transition: background-color 0.2s, transform 0.2s ease-in-out;
     }
-    
+
     .payment-button:hover {
         background-color: var(--primary-hover);
+        transform: scale(1.02);
     }
-    
-    /* Responsive adjustments */
+
+    /* Responsive */
     @media (max-width: 640px) {
         .payment-card {
             padding: 1.5rem;
         }
-        
+
         .payment-title {
             font-size: 1.5rem;
         }
