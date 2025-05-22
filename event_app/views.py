@@ -74,11 +74,11 @@ def home(request):
     except Exception as e:
         logger.error(f"Error in home view: {str(e)}")
         return render(request, 'home.html', {'error': 'An error occurred while loading the page.'})
-@login_required
+
 def events_list(request):
     events = Event_management.objects.all()
     return render(request, 'event.html', {'events': events})
-
+@login_required
 def admin_dashboard(request):
     return render(request,'index.html')
 def speaker_list(request):
