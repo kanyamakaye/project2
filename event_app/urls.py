@@ -22,7 +22,7 @@ urlpatterns = [
     path('speaker-form/', views.speaker_forms, name='speaker_forms'),
     
     # Participant Management URLs
-    path('participants/', views.participant_list, name='participant_list'),
+    path('participants/', views.participants_list, name='participant_list'),
     path('participant-form/', views.participant_forms, name='participant_forms'),
     path('participant/edit/<int:participant_id>/', views.edit_participant, name='edit_participant'),
     path('participant/delete/<int:participant_id>/', views.delete_participant, name='delete_participant'),

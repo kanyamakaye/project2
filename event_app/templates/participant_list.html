@@ -1,75 +1,314 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block content %}
-<div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="card-title mb-0">Participant's List</h1>
-            </div>
+{% block extra_css %}
+<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+<style>
+    .transition-all {
+        transition: all 0.3s ease;
+    }
+    .table-row-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .badge {
+        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    }
+    .badge-blue {
+        @apply bg-blue-100 text-blue-800;
+    }
+    .badge-pink {
+        @apply bg-pink-100 text-pink-800;
+    }
+</style>
+{% endblock %}
 
-            <!-- Statistics Card -->
-            <div class="card bg-light mb-4">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
-                            <i class="fas fa-users text-primary"></i>
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
+            <div>
+                <h1 class="text-3xl font-extrabold text-gray-900">Participants</h1>
+                <p class="mt-1 text-sm text-gray-500">Manage and view all event participants</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex space-x-3">
+                <button type="button" id="exportCSV" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Export CSV
+                </button>
+                <button type="button" id="printList" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                    </svg>
+                    Print
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8">
+            <!-- Total Participants Card -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
                         </div>
-                        <div>
-                            <h6 class="text-muted mb-1">Total Participants</h6>
-                            <h3 class="mb-0">{{ total_count }}</h3>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Total Participants</dt>
+                                <dd>
+                                    <div class="text-lg font-semibold text-gray-900">{{ total_count }}</div>
+                                </dd>
+                            </dl>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Search -->
-            <div class="mb-4">
-                <div class="input-group">
-                    <span class="input-group-text bg-white">
-                        <i class="fas fa-search text-muted"></i>
-                    </span>
-                    <input type="text" id="participantSearch" class="form-control" placeholder="Search by name, email, phone, sex, university, or event">
+            <!-- Male Participants Card -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-blue-500 rounded-md p-3">
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Male Participants</dt>
+                                <dd>
+                                    <div class="text-lg font-semibold text-gray-900">{{ male_count }}</div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Participants Table -->
-            <div class="table-responsive">
-                <table class="table table-hover" id="participantTable">
-                    <thead class="table-light">
+            <!-- Female Participants Card -->
+            <div class="bg-white overflow-hidden shadow rounded-lg">
+                <div class="px-4 py-5 sm:p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 bg-pink-500 rounded-md p-3">
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <div class="ml-5 w-0 flex-1">
+                            <dl>
+                                <dt class="text-sm font-medium text-gray-500 truncate">Female Participants</dt>
+                                <dd>
+                                    <div class="text-lg font-semibold text-gray-900">{{ female_count }}</div>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="bg-white shadow rounded-lg mb-8">
+            <div class="px-4 py-5 sm:p-6">
+                <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Filters</h3>
+                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+                    <!-- Search -->
+                    <div class="sm:col-span-2">
+                        <label for="participantSearch" class="block text-sm font-medium text-gray-700">Search</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                            <input type="text" id="participantSearch" class="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" placeholder="Name, email, phone...">
+                        </div>
+                    </div>
+
+                    <!-- University Filter -->
+                    <div class="sm:col-span-2">
+                        <label for="universityFilter" class="block text-sm font-medium text-gray-700">University</label>
+                        <select id="universityFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="">All Universities</option>
+                            {% for choice in university_choices %}
+                                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Sex Filter -->
+                    <div class="sm:col-span-1">
+                        <label for="sexFilter" class="block text-sm font-medium text-gray-700">Gender</label>
+                        <select id="sexFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="">All</option>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+
+                    <!-- Event Filter -->
+                    <div class="sm:col-span-1">
+                        <label for="eventFilter" class="block text-sm font-medium text-gray-700">Event</label>
+                        <select id="eventFilter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            <option value="">All Events</option>
+                            {% for event in events %}
+                                <option value="{{ event.id }}">{{ event }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Participants Table -->
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200" id="participantTable">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Sex</th>
-                            <th>University</th>
-                            <th>Event</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" data-sort="id">
+                                <div class="flex items-center">
+                                    ID
+                                    <svg class="ml-1 w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                                    </svg>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer" data-sort="name">
+                                <div class="flex items-center">
+                                    Name
+                                    <svg class="ml-1 w-4 h-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                                    </svg>
+                                </div>
+                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">University</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white divide-y divide-gray-200">
                         {% for participant in participants %}
-                        <tr>
-                            <td>{{ participant.id }}</td>
-                            <td>{{ participant.name }}</td>
-                            <td>{{ participant.email }}</td>
-                            <td>{{ participant.phone_number }}</td>
-                            <td>{{ participant.sex }}</td>
-                            <td>{{ participant.university }}</td>
-                            <td>{{ participant.Event }}</td>
+                        <tr class="table-row-hover transition-all">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ participant.id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-800 font-semibold">
+                                            {{ participant.name|slice:":1" }}
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">{{ participant.name }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ participant.email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ participant.phone_number }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if participant.sex == 'M' %}
+                                <span class="badge badge-blue">Male</span>
+                                {% else %}
+                                <span class="badge badge-pink">Female</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ participant.university }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ participant.Event }}</td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="7" class="text-center py-4">
-                                <div class="text-muted">
-                                    <i class="fas fa-info-circle me-2"></i>No participants found.
+                            <td colspan="7" class="px-6 py-10 text-center">
+                                <div class="flex flex-col items-center">
+                                    <svg class="h-12 w-12 text-gray-400 mb-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                    </svg>
+                                    <p class="text-gray-500 text-lg">No participants found</p>
+                                    <p class="text-gray-400 text-sm mt-1">Try adjusting your search or filter to find what you're looking for.</p>
                                 </div>
                             </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+                
+                <!-- Empty state (hidden by default) -->
+                <div id="emptyState" class="hidden py-12 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">No results found</h3>
+                    <p class="mt-1 text-sm text-gray-500">Try adjusting your search or filter to find what you're looking for.</p>
+                    <div class="mt-6">
+                        <button type="button" id="clearFilters" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Clear filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pagination -->
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div class="flex-1 flex justify-between sm:hidden">
+                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Previous
+                    </a>
+                    <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Next
+                    </a>
+                </div>
+                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Showing <span class="font-medium">1</span> to <span class="font-medium">{{ participants|length }}</span> of <span class="font-medium">{{ total_count }}</span> results
+                        </p>
+                    </div>
+                    <div>
+                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Previous</span>
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                            <a href="#" aria-current="page" class="z-10 bg-indigo-50 border-indigo-500 text-indigo-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                1
+                            </a>
+                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                2
+                            </a>
+                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                3
+                            </a>
+                            <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                                ...
+                            </span>
+                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                8
+                            </a>
+                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                9
+                            </a>
+                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                                10
+                            </a>
+                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Next</span>
+                                <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -78,26 +317,165 @@
 
 {% block extra_js %}
 <script>
-    // Enhanced client-side search: filters all columns
     document.addEventListener('DOMContentLoaded', function () {
+        // DOM elements
         const searchInput = document.getElementById('participantSearch');
+        const universityFilter = document.getElementById('universityFilter');
+        const sexFilter = document.getElementById('sexFilter');
+        const eventFilter = document.getElementById('eventFilter');
+        const clearFiltersBtn = document.getElementById('clearFilters');
+        const exportCSVBtn = document.getElementById('exportCSV');
+        const printListBtn = document.getElementById('printList');
         const table = document.getElementById('participantTable');
-        const rows = table.getElementsByTagName('tr');
-
-        searchInput.addEventListener('keyup', function () {
+        const rows = table.querySelectorAll('tbody tr');
+        const emptyState = document.getElementById('emptyState');
+        
+        // Filter table based on search and filter values
+        function filterTable() {
             const query = searchInput.value.toLowerCase();
-
-            // Skip header row (index 0)
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                if (row.cells.length < 7) continue; // Skip empty message row
-
-                const match = Array.from(row.cells).some(cell =>
-                    cell.textContent.toLowerCase().includes(query)
-                );
-
-                row.style.display = match ? '' : 'none';
+            const universityValue = universityFilter.value;
+            const sexValue = sexFilter.value;
+            const eventValue = eventFilter.value;
+            let matchCount = 0;
+            
+            rows.forEach(row => {
+                if (row.cells.length < 7) return; // Skip invalid rows
+                
+                // Get cell values
+                const id = row.cells[0].textContent.toLowerCase();
+                const name = row.cells[1].textContent.toLowerCase();
+                const email = row.cells[2].textContent.toLowerCase();
+                const phone = row.cells[3].textContent.toLowerCase();
+                const sex = row.cells[4].textContent.toLowerCase();
+                const university = row.cells[5].textContent.toLowerCase();
+                const event = row.cells[6].textContent.toLowerCase();
+                
+                // Check if all filters match
+                const universityMatch = !universityValue || university.includes(universityValue.toLowerCase());
+                const sexMatch = !sexValue || sex.includes(sexValue === 'M' ? 'male' : 'female');
+                const eventMatch = !eventValue || event.includes(eventValue.toLowerCase());
+                
+                // Check if search query matches any field
+                const searchMatch = query === '' || 
+                    id.includes(query) || 
+                    name.includes(query) || 
+                    email.includes(query) || 
+                    phone.includes(query) || 
+                    sex.includes(query) || 
+                    university.includes(query) || 
+                    event.includes(query);
+                
+                // Show/hide row based on matches
+                if (universityMatch && sexMatch && eventMatch && searchMatch) {
+                    row.classList.remove('hidden');
+                    matchCount++;
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+            
+            // Show/hide empty state
+            if (matchCount === 0 && (query !== '' || universityValue !== '' || sexValue !== '' || eventValue !== '')) {
+                table.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            } else {
+                table.classList.remove('hidden');
+                emptyState.classList.add('hidden');
             }
+        }
+        
+        // Clear all filters
+        function clearFilters() {
+            searchInput.value = '';
+            universityFilter.value = '';
+            sexFilter.value = '';
+            eventFilter.value = '';
+            filterTable();
+        }
+        
+        // Export table data to CSV
+        function exportToCSV() {
+            const headers = ['ID', 'Name', 'Email', 'Phone', 'Gender', 'University', 'Event'];
+            let csvContent = headers.join(',') + '\n';
+            
+            // Get visible rows only
+            const visibleRows = Array.from(rows).filter(row => !row.classList.contains('hidden'));
+            
+            visibleRows.forEach(row => {
+                if (row.cells.length < 7) return;
+                
+                const rowData = [
+                    row.cells[0].textContent.trim(),
+                    '"' + row.cells[1].textContent.trim() + '"',
+                    '"' + row.cells[2].textContent.trim() + '"',
+                    '"' + row.cells[3].textContent.trim() + '"',
+                    row.cells[4].textContent.trim(),
+                    '"' + row.cells[5].textContent.trim() + '"',
+                    '"' + row.cells[6].textContent.trim() + '"'
+                ];
+                
+                csvContent += rowData.join(',') + '\n';
+            });
+            
+            // Create download link
+            const encodedUri = encodeURI('data:text/csv;charset=utf-8,' + csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', 'participants.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Print list
+        function printList() {
+            window.print();
+        }
+        
+        // Add event listeners
+        searchInput.addEventListener('input', filterTable);
+        universityFilter.addEventListener('change', filterTable);
+        sexFilter.addEventListener('change', filterTable);
+        eventFilter.addEventListener('change', filterTable);
+        clearFiltersBtn.addEventListener('click', clearFilters);
+        exportCSVBtn.addEventListener('click', exportToCSV);
+        printListBtn.addEventListener('click', printList);
+        
+        // Initialize sorting
+        const headers = table.querySelectorAll('th[data-sort]');
+        headers.forEach(header => {
+            header.addEventListener('click', () => {
+                const column = header.getAttribute('data-sort');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                
+                // Sort rows
+                rows.sort((a, b) => {
+                    let aValue, bValue;
+                    
+                    if (column === 'id') {
+                        aValue = parseInt(a.cells[0].textContent.trim());
+                        bValue = parseInt(b.cells[0].textContent.trim());
+                    } else if (column === 'name') {
+                        aValue = a.cells[1].textContent.trim().toLowerCase();
+                        bValue = b.cells[1].textContent.trim().toLowerCase();
+                    }
+                    
+                    if (aValue < bValue) return -1;
+                    if (aValue > bValue) return 1;
+                    return 0;
+                });
+                
+                // Clear tbody
+                while (tbody.firstChild) {
+                    tbody.removeChild(tbody.firstChild);
+                }
+                
+                // Append sorted rows
+                rows.forEach(row => {
+                    tbody.appendChild(row);
+                });
+            });
         });
     });
 </script>

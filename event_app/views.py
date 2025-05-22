@@ -227,17 +227,30 @@ def participants_with_all_payments(request):
     return render(request, 'participants_with_all_payments.html', {'participants': participants})
 
 #def participant_list(request):
-def participant_list(request):
-    """
-    Display a simple list of all participants.
-    """
-    # Get all participants
+def participants_list(request):
+    # Get all participants from the database
     participants = Participant_management.objects.all()
     
-    # Pass to template
+    # Get total count
+    total_count = participants.count()
+    
+    # Get male and female counts
+    male_count = participants.filter(sex='M').count()
+    female_count = participants.filter(sex='F').count()
+    
+    # Get university choices for the filter dropdown
+    university_choices = Participant_management.UNIVERSITY_CHOICES
+    
+    # Get all events for the filter dropdown
+    events = Event_management.objects.all()
+    
     context = {
         'participants': participants,
-        'total_count': participants.count()
+        'total_count': total_count,
+        'male_count': male_count,
+        'female_count': female_count,
+        'university_choices': university_choices,
+        'events': events,
     }
     
     return render(request, 'participant_list.html', context)
