@@ -13,7 +13,11 @@ class CategoryForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter category name'})
         }
-
+    def clean_name(self):
+        name = self.cleaned_data['name'].strip()
+        if Category.objects.filter(name__iexact=name).exists():
+            raise forms.ValidationError("This category already exists.")
+        return name
 class EventManagementForm(forms.ModelForm):
     class Meta:
         model = Event_management

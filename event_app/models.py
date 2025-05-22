@@ -11,11 +11,10 @@ from geopy.geocoders import Nominatim
 
 # Create your models here.
 class Category(models.Model):
-    name = models.CharField(max_length=50)
+   name = models.CharField(max_length=50)
 
-    def __str__(self):
+def __str__(self):
         return self.name
-
 class Event_management(models.Model):
     CAMPUS_CHOICES = [
         ('Nyarugenge Campus', 'Nyarugenge Campus: College of Science and Technology (CST)'),
