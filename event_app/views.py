@@ -78,7 +78,7 @@ def home(request):
 def events_list(request):
     events = Event_management.objects.all()
     return render(request, 'event.html', {'events': events})
-@login_required
+
 def admin_dashboard(request):
     return render(request,'index.html')
 def speaker_list(request):
