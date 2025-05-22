@@ -13,7 +13,7 @@ from geopy.geocoders import Nominatim
 class Category(models.Model):
    name = models.CharField(max_length=50)
 
-def __str__(self):
+   def __str__(self):
         return self.name
 class Event_management(models.Model):
     CAMPUS_CHOICES = [
