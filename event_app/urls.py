@@ -104,5 +104,7 @@ urlpatterns = [
     path('total-participants/', views.total_participants, name='total_participants'),
     path('total-payment/', views.total_payment_view, name='total_payment'),
     path('contact/', views.contact_view, name='contact'),
+    path('speaker_announcement/', views.speaker_announcements, name='speaker_announcement'),
+    path('create_announcement/', views.create_speaker_announcement, name='create_announcement'),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

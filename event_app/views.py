@@ -82,6 +82,26 @@ def home(request):
         logger.error(f"Error in home view: {str(e)}")
         return render(request, 'home.html', {'error': 'An error occurred while loading the page.'})
 
+from django.shortcuts import render
+from .models import SpeakerAnnouncement
+
+def speaker_announcements(request):
+    speakers = SpeakerAnnouncement.objects.select_related('speaker').order_by('event_date', 'event_time')
+    return render(request, 'speakers.html', {'speakers': speakers})
+
+from django.shortcuts import render, redirect
+from .forms import SpeakerAnnouncementForm
+
+def create_speaker_announcement(request):
+    if request.method == 'POST':
+        form = SpeakerAnnouncementForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('speaker_announcement')  # Go back to the list page
+    else:
+        form = SpeakerAnnouncementForm()
+    return render(request, 'create_announcement.html', {'form': form})
+
 def events_list(request):
     events = Event_management.objects.all()
     return render(request, 'event.html', {'events': events})

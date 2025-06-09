@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import (
     Category, Event_management, Speaker_management, Participant_management,
-    Schedule_management, Payment, CartItem, EmailVerification, User
+    Schedule_management, Payment, CartItem, EmailVerification, User,SpeakerAnnouncement
 )
 
 @admin.register(Category)
@@ -82,3 +82,4 @@ class CustomUserAdmin(UserAdmin):
     )
     ordering = ('-date_joined',)
 
+admin.site.register(SpeakerAnnouncement)

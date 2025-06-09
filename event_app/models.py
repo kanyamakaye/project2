@@ -67,6 +67,20 @@ class Speaker_management(models.Model):
     def __str__(self):
         return self.name
 
+
+class SpeakerAnnouncement(models.Model):
+    speaker = models.ForeignKey(Speaker_management, on_delete=models.CASCADE, related_name='announcements')
+    topic_title = models.CharField(max_length=200)
+    description = models.TextField()
+    event_date = models.DateField()
+    event_time = models.TimeField()
+    location = models.CharField(max_length=255)
+    is_keynote = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.speaker.name} - {self.topic_title}"
+        
 class Participant_management(models.Model):
     UNIVERSITY_CHOICES = [
         ('University of Rwanda', 'University of Rwanda'),

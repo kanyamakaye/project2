@@ -170,3 +170,24 @@ class EmailVerificationForm(forms.Form):
             'title': 'Please enter a 6-digit code'
         })
     )
+
+from django import forms
+from .models import SpeakerAnnouncement
+
+class SpeakerAnnouncementForm(forms.ModelForm):
+    class Meta:
+        model = SpeakerAnnouncement
+        fields = [
+            'speaker',
+            'topic_title',
+            'description',
+            'event_date',
+            'event_time',
+            'location',
+            'is_keynote',
+        ]
+        widgets = {
+            'event_date': forms.DateInput(attrs={'type': 'date'}),
+            'event_time': forms.TimeInput(attrs={'type': 'time'}),
+        }
+
