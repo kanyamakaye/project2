@@ -5,6 +5,13 @@ from django.template import loader
 from django.db.models import Count, Sum, Avg, Min, Max
 from django.utils import timezone
 from datetime import timedelta, datetime
+from django.shortcuts import render
+from django.http import JsonResponse
+from django.db.models import Sum, Count
+from django.utils import timezone
+from datetime import datetime, timedelta
+from django.db.models.functions import TruncMonth
+import json
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import (
     EventManagementForm, SpeakerManagementForm, ParticipantManagementForm,
@@ -1154,23 +1161,6 @@ def display_payment(request):
     return render(request, 'display_payment.html', {'payments': payments})
 
 #updating 
-
-from django.shortcuts import render
-from django.http import JsonResponse
-from django.db.models import Sum, Count
-from django.utils import timezone
-from datetime import datetime, timedelta
-from django.db.models.functions import TruncMonth
-import json
-
-from .models import (
-    Event_management,
-    Speaker_management,
-    Participant_management,
-    Schedule_management,
-    Payment
-)
-
 def dashboard(request):
     # Get date filters from request or use defaults
     start_date_str = request.GET.get('start_date')
