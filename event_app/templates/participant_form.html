@@ -7,46 +7,97 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* Modern form styles with Google Fonts */
+        /* Enhanced modern form styles with Google Fonts */
         :root {
             --primary-color: #4361ee;
             --primary-hover: #3a56d4;
+            --secondary-color: #7209b7;
+            --accent-color: #f72585;
             --text-color: #333;
             --text-light: #666;
+            --text-muted: #999;
             --bg-color: #f8f9fa;
             --card-bg: #ffffff;
             --border-color: #e0e0e0;
+            --border-focus: #4361ee;
             --success-color: #4caf50;
             --success-hover: #45a049;
+            --error-color: #e74c3c;
+            --warning-color: #ff9800;
             --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --transition: all 0.3s ease;
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --border-radius: 12px;
+            --border-radius-small: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
+            background: #ffffff;
             color: var(--text-color);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        /* Remove animated background particles for white background */
+        body::before {
+            display: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
         }
 
         .form-container {
             max-width: 800px;
             margin: 40px auto;
             padding: 20px;
+            position: relative;
         }
 
         .form-wrapper {
             background-color: var(--card-bg);
-            border-radius: 12px;
+            border-radius: var(--border-radius);
             box-shadow: var(--shadow);
             overflow: hidden;
             position: relative;
+            border: 1px solid var(--border-color);
+            transition: var(--transition);
+        }
+
+        .form-wrapper:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-5px);
         }
 
         .form-header {
-            background: linear-gradient(135deg, var(--primary-color), #7209b7);
-            padding: 30px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            padding: 40px 30px;
             color: white;
             position: relative;
+            overflow: hidden;
+        }
+
+        .form-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
         }
 
         .form-header::after {
@@ -63,36 +114,61 @@
         .form-heading {
             font-family: 'Montserrat', sans-serif;
             font-weight: 600;
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             margin: 0;
             letter-spacing: -0.5px;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .form-subheading {
             font-weight: 300;
-            margin-top: 8px;
+            margin-top: 12px;
             opacity: 0.9;
+            font-size: 1.1rem;
+            position: relative;
+            z-index: 2;
         }
 
         .my-form {
-            padding: 30px;
+            padding: 40px 30px;
         }
 
         .form-fields {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .form-fields p {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             position: relative;
         }
 
         .form-fields label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: 500;
             color: var(--text-color);
             font-size: 0.95rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .form-fields label::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: var(--transition);
+        }
+
+        .form-fields input:focus + label::after,
+        .form-fields textarea:focus + label::after,
+        .form-fields select:focus + label::after {
+            width: 100%;
         }
 
         .form-fields input[type="text"],
@@ -104,72 +180,172 @@
         .form-fields select,
         .form-fields textarea {
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius-small);
             font-family: 'Poppins', sans-serif;
             font-size: 1rem;
             transition: var(--transition);
             background-color: #f9f9f9;
+            position: relative;
         }
 
         .form-fields input:focus,
         .form-fields textarea:focus,
         .form-fields select:focus {
             outline: none;
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+            background-color: white;
+            transform: translateY(-2px);
+        }
+
+        .form-fields input:hover,
+        .form-fields textarea:hover,
+        .form-fields select:hover {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
             background-color: white;
         }
 
+        /* Floating label effect */
+        .form-fields .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .form-fields .input-group input,
+        .form-fields .input-group textarea,
+        .form-fields .input-group select {
+            padding-top: 24px;
+            padding-bottom: 8px;
+        }
+
+        .form-fields .input-group label {
+            position: absolute;
+            top: 16px;
+            left: 20px;
+            font-size: 1rem;
+            color: var(--text-muted);
+            pointer-events: none;
+            transition: var(--transition);
+            margin: 0;
+        }
+
+        .form-fields .input-group input:focus + label,
+        .form-fields .input-group input:not(:placeholder-shown) + label,
+        .form-fields .input-group textarea:focus + label,
+        .form-fields .input-group textarea:not(:placeholder-shown) + label,
+        .form-fields .input-group select:focus + label {
+            top: 6px;
+            font-size: 0.75rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
         .submit-btn {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 14px 28px;
+            padding: 16px 32px;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--border-radius-small);
             cursor: pointer;
             font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            font-size: 1rem;
+            font-weight: 600;
+            font-size: 1.1rem;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 6px rgba(67, 97, 238, 0.2);
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: var(--transition);
+            transform: translate(-50%, -50%);
+        }
+
+        .submit-btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .submit-btn:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(67, 97, 238, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4);
         }
 
         .submit-btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
         }
 
-        /* Add a decorative element */
+        .submit-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Enhanced decorative elements */
         .form-decoration {
             position: absolute;
             top: 20px;
             right: 20px;
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.1);
-            z-index: 0;
+            z-index: 1;
+            animation: rotate 10s linear infinite;
         }
 
         .form-decoration:before {
             content: '';
             position: absolute;
-            top: -15px;
-            left: -15px;
+            top: -20px;
+            left: -20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            animation: rotate 8s linear infinite reverse;
+        }
+
+        .form-decoration:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            right: -15px;
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            animation: rotate 12s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Progress indicator */
+        .progress-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.3s ease;
         }
 
         /* Responsive adjustments */
@@ -180,39 +356,78 @@
             }
             
             .form-header {
-                padding: 20px;
+                padding: 30px 20px;
             }
             
             .form-heading {
-                font-size: 1.5rem;
+                font-size: 1.8rem;
             }
             
             .my-form {
-                padding: 20px;
+                padding: 30px 20px;
             }
             
             .submit-btn {
                 width: 100%;
+                min-width: auto;
+            }
+
+            .form-decoration {
+                width: 60px;
+                height: 60px;
+                top: 15px;
+                right: 15px;
             }
         }
 
-        /* Helper class for form errors */
+        /* Enhanced error styling */
         .errorlist {
-            color: #e74c3c;
+            color: var(--error-color);
             font-size: 0.85rem;
-            margin-top: 5px;
+            margin-top: 8px;
             list-style-type: none;
             padding-left: 0;
+            animation: shake 0.5s ease-in-out;
         }
 
-        /* Animation for form elements */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        .errorlist li {
+            padding: 8px 12px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 4px;
+            border-left: 4px solid var(--error-color);
+            margin-bottom: 4px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Success message styling */
+        .success-message {
+            color: var(--success-color);
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            padding: 15px;
+            border-radius: var(--border-radius-small);
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Enhanced animation for form elements */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .form-fields p {
-            animation: fadeIn 0.5s ease forwards;
+            animation: fadeInUp 0.6s ease forwards;
             opacity: 0;
         }
 
@@ -221,25 +436,135 @@
         .form-fields p:nth-child(3) { animation-delay: 0.3s; }
         .form-fields p:nth-child(4) { animation-delay: 0.4s; }
         .form-fields p:nth-child(5) { animation-delay: 0.5s; }
+        .form-fields p:nth-child(6) { animation-delay: 0.6s; }
+        .form-fields p:nth-child(7) { animation-delay: 0.7s; }
+        .form-fields p:nth-child(8) { animation-delay: 0.8s; }
+
+        /* Loading state for submit button */
+        .submit-btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Checkbox and radio button styling */
+        .form-fields input[type="checkbox"],
+        .form-fields input[type="radio"] {
+            width: auto;
+            margin-right: 10px;
+            transform: scale(1.2);
+            accent-color: var(--primary-color);
+        }
+
+        /* File input styling */
+        .form-fields input[type="file"] {
+            padding: 10px;
+            border: 2px dashed var(--border-color);
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .form-fields input[type="file"]:hover {
+            border-color: var(--primary-color);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        /* Tooltip styling */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: help;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--text-color);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 
     <div class="form-container">
         <div class="form-wrapper">
+            <div class="progress-indicator"></div>
             <div class="form-header">
                 <div class="form-decoration"></div>
-                <h1 class="form-heading">Register For Event Now!!!!!!!!</h1>
-                <p class="form-subheading">Please complete the form below with your details to register for event</p>
+                <h1 class="form-heading">Register For Event Now!</h1>
+                <p class="form-subheading">Please complete the form below with your details to register for the event</p>
             </div>
             
-            <form method="POST" class="my-form">
+            <form method="POST" class="my-form" id="registrationForm">
                 {% csrf_token %}
                 <div class="form-fields">
                     {{ form.as_p }}
                 </div>
-                <button type="submit" class="submit-btn">
-                    Submit Information
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span>Submit Information</span>
                 </button>
             </form>
         </div>
     </div>
+
+    <script>
+        // Enhanced form interactions
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const progressIndicator = document.querySelector('.progress-indicator');
+            const inputs = form.querySelectorAll('input, textarea, select');
+            
+            // Progress indicator
+            function updateProgress() {
+                const totalFields = inputs.length;
+                const filledFields = Array.from(inputs).filter(input => input.value.trim() !== '').length;
+                const progress = (filledFields / totalFields) * 100;
+                progressIndicator.style.width = progress + '%';
+            }
+            
+            inputs.forEach(input => {
+                input.addEventListener('input', updateProgress);
+                input.addEventListener('change', updateProgress);
+            });
+            
+            // Form submission with loading state
+            form.addEventListener('submit', function(e) {
+                submitBtn.classList.add('loading');
+                submitBtn.querySelector('span').textContent = 'Submitting...';
+            });
+            
+            // Initialize progress
+            updateProgress();
+        });
+    </script>
 {% endblock content %}
